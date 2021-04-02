@@ -138,7 +138,9 @@ build-lib/
 images/
 models/*.param
 models/*.bin
-/ncnn-static
-/ncnn-vulkan-static
-/opencv-static
-/opencv-shared
+/ncnn-static/*
+!/ncnn-static/NcnnWrapperConfig.cmake
+/ncnn-vulkan-static/*
+!/ncnn-vulkan-static/NcnnWrapperConfig.cmake
+/opencv-static/
+/opencv-shared/
