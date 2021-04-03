@@ -95,7 +95,7 @@ std::vector<TextBox> findRsBoxes(const cv::Mat &predMat, const cv::Mat &dilateMa
 std::vector<TextBox>
 DbNet::getTextBoxes(cv::Mat &src, ScaleParam &s, float boxScoreThresh, float boxThresh, float unClipRatio) {
     cv::Mat srcResize;
-    resize(src, srcResize, cv::Size(s.dstWidth, s.dstHeight));
+    cv::resize(src, srcResize, cv::Size(s.dstWidth, s.dstHeight));
     ncnn::Mat input = ncnn::Mat::from_pixels(srcResize.data, ncnn::Mat::PIXEL_RGB,
                                              srcResize.cols, srcResize.rows);
 
