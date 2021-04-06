@@ -93,3 +93,10 @@ RapidOCRNcnnCpp/opencv-static
 └── windows-x86
 ```
 
+### macOS编译
+
+```shell
+brew doctor
+sudo rm -rf /Library/Developer/CommandLineTools
+sudo xcode-select --install
+```
