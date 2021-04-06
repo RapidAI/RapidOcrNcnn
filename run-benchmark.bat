@@ -29,8 +29,8 @@ exit
 )
 
 :: run Windows
-build\benchmark.exe --version
-build\benchmark.exe --models models ^
+build\install\bin\benchmark.exe --version
+build\install\bin\benchmark.exe --models models ^
 --det %DET_MODEL% ^
 --cls ch_ppocr_mobile_v2.0_cls_infer ^
 --rec %REC_MODEL% ^

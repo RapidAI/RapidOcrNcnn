@@ -1,16 +1,18 @@
-cmake_minimum_required(VERSION 3.1)
+if (WIN32)
+    cmake_minimum_required(VERSION 3.12)
+elseif (APPLE)
+    cmake_minimum_required(VERSION 3.19)
+elseif (UNIX)
+    cmake_minimum_required(VERSION 3.17)
+endif ()
 project(RapidOCRNcnn)
 
-option(OCR_LIB "OcrLite Jni Support" OFF)
-option(OCR_STATIC "Use Static Librarys For Build" ON)
-option(OCR_OPENMP "OcrLite Enable OpenMP" ON)
+option(OUTPUT_TYPE "build benchmark" "EXE")
 option(OCR_BENCHMARK "build benchmark" ON)
 option(OCR_VULKAN "OcrLite Enable Vulkan" OFF)
-#set(OCR_LIB ON)
-#set(OCR_STATIC OFF)
-#set(OCR_OPENMP OFF)
 set(OCR_BENCHMARK ON)
 #set(OCR_VULKAN OFF)
+#set(OUTPUT_TYPE "EXE")
 
 set(CMAKE_CXX_STANDARD 11)
 add_definitions(-DUNICODE -D_UNICODE)
@@ -62,11 +64,8 @@ else ()
 endif (ncnn_FOUND)
 
 # OpenCV
-if (OCR_STATIC)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/opencv-static/OpenCVWrapperConfig.cmake)
-else ()
-    include(${CMAKE_CURRENT_SOURCE_DIR}/opencv-shared/OpenCVWrapperConfig.cmake)
-endif ()
+set(BUILD_SHARED_LIBS false)
+include(${CMAKE_CURRENT_SOURCE_DIR}/opencv-static/OpenCVWrapperConfig.cmake)
 find_package(OpenCV REQUIRED)
 if (OpenCV_FOUND)
     message(STATUS "OpenCV_LIBS: ${OpenCV_LIBS}")
@@ -74,19 +73,6 @@ if (OpenCV_FOUND)
 else ()
     message(FATAL_ERROR "opencv Not Found!")
 endif (OpenCV_FOUND)
-
-# JNI
-if (OCR_LIB)
-    find_package(JNI REQUIRED)
-    if (JNI_FOUND)
-        message("JNI FOUND")
-        message(STATUS "JNI_LIBS: ${JNI_LIBS}")
-        message(STATUS "JNI_INCLUDE_DIRS: ${JNI_INCLUDE_DIRS}")
-        include_directories(${JNI_INCLUDE_DIRS})
-    else ()
-        message(FATAL_ERROR "JNI Not Found!")
-    endif ()
-endif ()
 
 # project include
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -96,33 +82,49 @@ file(GLOB OCR_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 set(OCR_COMPILE_CODE ${OCR_SRC})
 
 # static libgcc libstdc++
-if (OCR_STATIC)
-    if (APPLE)
-        set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
+#if (OCR_STATIC)
+#    if (APPLE)
+#        set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
+#    else ()
+#        set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+#    endif ()
+#endif ()
+message("OUTPUT_TYPE: ${OUTPUT_TYPE}")
+if (OUTPUT_TYPE AND OUTPUT_TYPE STREQUAL "EXE")
+    add_executable(RapidOCRNcnn ${OCR_COMPILE_CODE})
+    target_link_libraries(RapidOCRNcnn ncnn ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
+elseif (OUTPUT_TYPE AND OUTPUT_TYPE STREQUAL "JNI")
+    find_package(JNI REQUIRED)
+    if (JNI_FOUND)
+        message("JNI FOUND")
+        message(STATUS "JNI_LIBS: ${JNI_LIBS}")
+        message(STATUS "JNI_INCLUDE_DIRS: ${JNI_INCLUDE_DIRS}")
+        include_directories(${JNI_INCLUDE_DIRS})
     else ()
-        set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+        message(FATAL_ERROR "JNI Not Found!")
     endif ()
-endif ()
-
-if (OCR_LIB)
     add_library(RapidOCRNcnn SHARED ${OCR_COMPILE_CODE})
     target_compile_definitions(RapidOCRNcnn PRIVATE __JNI__)
     target_link_libraries(RapidOCRNcnn ncnn ${OpenCV_LIBS} ${JNI_LIBS} ${OpenMP_CXX_LIB_NAMES})
-else ()
-    add_executable(RapidOCRNcnn ${OCR_COMPILE_CODE})
+elseif (OUTPUT_TYPE AND OUTPUT_TYPE STREQUAL "SHARED")
+    add_library(RapidOCRNcnn SHARED ${OCR_COMPILE_CODE})
+    target_link_libraries(RapidOCRNcnn ncnn ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
+elseif (OUTPUT_TYPE AND OUTPUT_TYPE STREQUAL "STATIC")
+    add_library(RapidOCRNcnn STATIC ${OCR_COMPILE_CODE})
     target_link_libraries(RapidOCRNcnn ncnn ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
 endif ()
 
-if (OCR_OPENMP)
-    target_compile_definitions(RapidOCRNcnn PRIVATE __OPENMP__)
-endif ()
+install(TARGETS RapidOCRNcnn EXPORT RapidOCRNcnn
+        ARCHIVE DESTINATION staticlib
+        LIBRARY DESTINATION sharedlib
+        RUNTIME DESTINATION bin)
 
 if (OCR_VULKAN)
     target_compile_definitions(RapidOCRNcnn PRIVATE __VULKAN__)
 endif ()
 
 # benchmark
-if (OCR_BENCHMARK AND NOT OCR_LIB)
+if (OCR_BENCHMARK AND (OUTPUT_TYPE STREQUAL "EXE"))
     add_executable(benchmark benchmark/benchmark.cpp
             src/AngleNet.cpp
             src/clipper.cpp
@@ -132,11 +134,12 @@ if (OCR_BENCHMARK AND NOT OCR_LIB)
             src/OcrLite.cpp
             src/OcrUtils.cpp)
     target_link_libraries(benchmark ncnn ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
-    if (OCR_OPENMP)
-        target_compile_definitions(benchmark PRIVATE __OPENMP__)
-    endif ()
 
     if (OCR_VULKAN)
         target_compile_definitions(benchmark PRIVATE __VULKAN__)
     endif ()
+    install(TARGETS benchmark EXPORT benchmark
+            ARCHIVE DESTINATION staticlib
+            LIBRARY DESTINATION sharedlib
+            RUNTIME DESTINATION bin)
 endif ()

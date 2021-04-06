@@ -11,7 +11,7 @@ if %flag% == 1 (set DET_MODEL=ch_ppocr_server_v2.0_det_infer)^
 else if %flag% == 2 (set DET_MODEL=ch_ppocr_mobile_v2.0_det_infer)^
 else (echo 输入错误！Input Error!)
 
-set REC_MODEL=ch_ppocr_mobile_v2.0_rec_infer
+set REC_MODEL=ch_ppocr_server_v2.0_rec_infer
 :: echo "请选择rec模型: 1)server, 2)mobile"
 :: set /p flag=
 :: if %flag% == 1 (set REC_MODEL=ch_ppocr_server_v2.0_rec_infer)^
@@ -26,8 +26,8 @@ exit
 )
 
 :: run Windows
-build\RapidOCRNcnn.exe --version
-build\RapidOCRNcnn.exe --models models ^
+build\install\bin\RapidOCRNcnn.exe --version
+build\install\bin\RapidOCRNcnn.exe --models models ^
 --det %DET_MODEL% ^
 --cls ch_ppocr_mobile_v2.0_cls_infer ^
 --rec %REC_MODEL%  ^

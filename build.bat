@@ -15,24 +15,6 @@ else if %flag% == 2 (set BUILD_TYPE=Debug)^
 else (echo 输入错误！Input Error!)
 echo.
 
-echo "请输入OpenMP选项并回车: 1)启用OpenMP(Angle阶段和Crnn阶段多线程并行执行), 2)禁用OpenMP(Angle阶段和Crnn阶段单线程执行)"
-set BUILD_OPENMP=ON
-set /p flag=
-if %flag% == 1 (set BUILD_OPENMP=ON)^
-else if %flag% == 2 (set BUILD_OPENMP=OFF)^
-else (echo 输入错误！Input Error!)
-echo.
-
-echo "使用静态库时，编译出来的可执行文件较大，但部署起来比较方便。"
-echo "使用动态库时，编译出来的可执行文件较小，但部署的时候记得把dll复制到可执行文件目录"
-echo "请选择要使用的Opencv库选项并回车: 1)Static静态库，2)Shared动态库"
-set BUILD_STATIC=ON
-set /p flag=
-if %flag% == 1 (set BUILD_STATIC=ON)^
-else if %flag% == 2 (set BUILD_STATIC=OFF)^
-else (echo "输入错误！Input Error!")
-echo.
-
 echo "请选择要使用的ncnn库选项并回车: 1)ncnn(CPU)，2)ncnn(vulkan)"
 set BUILD_NCNN_VULKAN=OFF
 set /p flag=
@@ -41,30 +23,48 @@ else if %flag% == 2 (set BUILD_NCNN_VULKAN=ON)^
 else (echo "输入错误！Input Error!")
 echo.
 
-echo "请注意：如果选择2)编译为JNI动态库时，必须安装配置Oracle JDK"
-echo "请选择编译输出类型并回车: 1)编译成可执行文件，2)编译成JNI动态库"
-set BUILD_LIB=OFF
+echo "请注意：如果选择2)JNI动态库时，必须安装配置Oracle JDK"
+echo "请选择编译输出类型并回车: 1)可执行文件，2)JNI动态库, 3)动态库, 4)静态库"
+set BUILD_OUTPUT="EXE"
 set /p flag=
-if %flag% == 1 (set BUILD_LIB=OFF)^
-else if %flag% == 2 (set BUILD_LIB=ON)^
+if %flag% == 1 (set BUILD_OUTPUT="EXE")^
+else if %flag% == 2 (set BUILD_OUTPUT="JNI")^
+else if %flag% == 3 (set BUILD_OUTPUT="SHARED")^
+else if %flag% == 4 (set BUILD_OUTPUT="STATIC")^
 else (echo 输入错误！Input Error!)
 echo.
-if %BUILD_LIB% == OFF (call :makeExe)^
-else (call :makeLib)
-echo cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_LIB% -DOCR_STATIC=%BUILD_STATIC% -DOCR_VULKAN=%BUILD_NCNN_VULKAN% ..
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_LIB% -DOCR_STATIC=%BUILD_STATIC% -DOCR_VULKAN=%BUILD_NCNN_VULKAN% ..
-nmake
-popd
-GOTO:EOF
 
-:makeExe
+echo "VS版本: 1)vs2017-x64，2)vs2017-x86, 3)vs2019-x64, 4)vs2019-x86"
+set BUILD_CMAKE_T="v141"
+set BUILD_CMAKE_A="x64"
+set /p flag=
+if %flag% == 1 (
+    set BUILD_CMAKE_T="v141"
+    set BUILD_CMAKE_A="x64"
+)^
+else if %flag% == 2 (
+    set BUILD_CMAKE_T="v141"
+    set BUILD_CMAKE_A="Win32"
+)^
+else if %flag% == 3 (
+    set BUILD_CMAKE_T="v142"
+    set BUILD_CMAKE_A="x64"
+)^
+else if %flag% == 4 (
+    set BUILD_CMAKE_T="v142"
+    set BUILD_CMAKE_A="Win32"
+)^
+else (echo 输入错误！Input Error!)
+echo.
+
 mkdir build
 pushd build
-GOTO:EOF
-
-:makeLib
-mkdir build-lib
-pushd build-lib
+cmake -T "%BUILD_CMAKE_T%,host=x64" -A %BUILD_CMAKE_A% ^
+  -DCMAKE_INSTALL_PREFIX=install ^
+  -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOUTPUT_TYPE=%BUILD_OUTPUT% -DOCR_VULKAN=%BUILD_NCNN_VULKAN% ..
+cmake --build . --config %BUILD_TYPE% -j %NUMBER_OF_PROCESSORS%
+cmake --build . --config Release --target install
+popd
 GOTO:EOF
 
 @ENDLOCAL

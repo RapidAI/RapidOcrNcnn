@@ -43,8 +43,8 @@ exit
 fi
 
 ##### run test on MacOS or Linux
-./build/RapidOCRNcnn --version
-./build/RapidOCRNcnn --models models \
+./build/install/bin/RapidOCRNcnn --version
+./build/install/bin/RapidOCRNcnn --models models \
 --det $DET_MODEL \
 --cls ch_ppocr_mobile_v2.0_cls_infer \
 --rec $REC_MODEL \

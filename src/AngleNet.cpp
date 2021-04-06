@@ -66,9 +66,6 @@ std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const cha
     int size = partImgs.size();
     std::vector<Angle> angles(size);
     if (doAngle) {
-#ifdef __OPENMP__
-#pragma omp parallel for num_threads(numThread)
-#endif
         for (int i = 0; i < size; ++i) {
             double startAngle = getCurrentTime();
             cv::Mat angleImg;

@@ -46,8 +46,8 @@ exit
 fi
 
 ##### run test on MacOS or Linux
-./build/benchmark --version
-./build/benchmark --models models \
+./build/install/bin/benchmark --version
+./build/install/bin/benchmark --models models \
 --det $DET_MODEL \
 --cls ch_ppocr_mobile_v2.0_cls_infer \
 --rec $REC_MODEL \
