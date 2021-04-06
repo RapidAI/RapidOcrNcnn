@@ -113,14 +113,12 @@ int main(int argc, char **argv) {
                 break;
             case 'v':
                 printf("%s\n", VERSION);
-                printGpuInfo();
                 return 0;
             case 'h':
                 printHelp(stdout, argv[0]);
                 return 0;
             case 'G':
                 flagGpu = (int) strtol(optarg, NULL, 10);
-                printGpuInfo();
 				break;
             case 'l':
                 loopCount = (int) strtol(optarg, NULL, 10);
