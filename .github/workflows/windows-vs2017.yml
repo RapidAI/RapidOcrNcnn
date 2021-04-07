@@ -1,0 +1,83 @@
+name: windows-vs2017
+
+on:
+  workflow_dispatch:
+
+jobs:
+  windows-vs2017:
+    runs-on: windows-2016
+
+    env:
+      NCNN_VERSION: 20210322
+      CPU_PKG_NAME: ncnn-20210322-windows-vs2017
+      GPU_PKG_NAME: ncnn-20210322-windows-vs2017-vulkan
+      CV_VERSION: 4.5.1
+      CV_PKG_NAME: opencv-4.5.1-windows-vs2017.7z
+
+    steps:
+      # 检出代码
+      - uses: actions/checkout@v2
+
+      # 安装vulkan
+      - name: vulkansdk
+        if: steps.cache-vulkansdk.outputs.cache-hit != 'true'
+        run: |
+          Invoke-WebRequest -Uri https://sdk.lunarg.com/sdk/download/1.2.162.0/windows/VulkanSDK-1.2.162.0-Installer.exe?Human=true -OutFile VulkanSDK-1.2.162.0-Installer.exe
+          7z x -aoa ./VulkanSDK-1.2.162.0-Installer.exe -oVulkanSDK
+          Remove-Item .\VulkanSDK\Demos, .\VulkanSDK\glslang, .\VulkanSDK\Samples, .\VulkanSDK\shaderc, .\VulkanSDK\spirv-tools, .\VulkanSDK\Third-Party, .\VulkanSDK\Tools, .\VulkanSDK\Tools32 -Recurse
+
+      # 缓存vulkan
+      - name: cache-vulkansdk
+        id: cache-vulkansdk
+        uses: actions/cache@v1.0.3
+        with:
+          path: "VulkanSDK"
+          key: VulkanSDK-1.2.162.0-Installer
+
+      # 下载ncnn-static
+      - name: download ncnn-static
+        run: |
+          cd ncnn-static
+          wget https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.CPU_PKG_NAME }}.7z -O ${{ env.CPU_PKG_NAME }}.7z
+          7z x ${{ env.CPU_PKG_NAME }}.7z -aoa
+
+      # 下载ncnn-vulkan-static
+      - name: download ncnn-vulkan-static
+        run: |
+          cd ncnn-vulkan-static
+          wget https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.GPU_PKG_NAME }}.7z -O ${{ env.GPU_PKG_NAME }}.7z
+          7z x ${{ env.GPU_PKG_NAME }}.7z -aoa
+
+      # 下载opencv-static
+      - name: download opencv-static
+        run: |
+          cd opencv-static
+          wget https://github.com/RapidOCR/OpenCVBuilder/releases/download/${{ env.CV_VERSION }}/${{ env.CV_PKG_NAME }}.7z -O ${{ env.CV_PKG_NAME }}.7z
+          7z x ${{ env.CV_PKG_NAME }}.7z -aoa
+
+      # 编译
+      - name: build
+        run: |
+          $env:VULKAN_SDK="$(pwd)/VulkanSDK"
+          ./build-default.bat
+
+      # 使用7z压缩
+      - name: 7zip
+        run: |
+          mkdir windows
+          mv win-bin-x64-cpu/install/bin windows/win-bin-x64-cpu
+          mv win-bin-x86-cpu/install/bin windows/win-bin-x86-cpu
+          mv win-bin-x64-gpu/install/bin windows/win-bin-x64-gpu
+          mv win-bin-x86-gpu/install/bin windows/win-bin-x86-gpu
+          mv win-jni-x64-cpu/install/bin windows/win-jni-x64-cpu
+          mv win-jni-x86-cpu/install/bin windows/win-jni-x86-cpu
+          mv win-jni-x64-gpu/install/bin windows/win-jni-x64-gpu
+          mv win-jni-x86-gpu/install/bin windows/win-jni-x86-gpu
+          7z a windows.7z windows
+
+      # 上传artifact
+      - name: upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows
+          path: windows.7z
