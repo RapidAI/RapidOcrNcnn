@@ -12,7 +12,7 @@ jobs:
       CPU_PKG_NAME: ncnn-20210322-windows-vs2017
       GPU_PKG_NAME: ncnn-20210322-windows-vs2017-vulkan
       CV_VERSION: 4.5.1
-      CV_PKG_NAME: opencv-4.5.1-windows-vs2017.7z
+      CV_PKG_NAME: opencv-4.5.1-windows-vs2017
 
     steps:
       # 检出代码
@@ -24,7 +24,7 @@ jobs:
         run: |
           Invoke-WebRequest -Uri https://sdk.lunarg.com/sdk/download/1.2.162.0/windows/VulkanSDK-1.2.162.0-Installer.exe?Human=true -OutFile VulkanSDK-1.2.162.0-Installer.exe
           7z x -aoa ./VulkanSDK-1.2.162.0-Installer.exe -oVulkanSDK
-          Remove-Item .\VulkanSDK\Demos, .\VulkanSDK\glslang, .\VulkanSDK\Samples, .\VulkanSDK\shaderc, .\VulkanSDK\spirv-tools, .\VulkanSDK\Third-Party, .\VulkanSDK\Tools, .\VulkanSDK\Tools32 -Recurse
+          Remove-Item .\VulkanSDK\Demos, .\VulkanSDK\Samples, .\VulkanSDK\Third-Party, .\VulkanSDK\Tools, .\VulkanSDK\Tools32 -Recurse
 
       # 缓存vulkan
       - name: cache-vulkansdk
@@ -38,21 +38,21 @@ jobs:
       - name: download ncnn-static
         run: |
           cd ncnn-static
-          wget https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.CPU_PKG_NAME }}.7z -O ${{ env.CPU_PKG_NAME }}.7z
+          Invoke-WebRequest -Uri https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.CPU_PKG_NAME }}.7z -OutFile ${{ env.CPU_PKG_NAME }}.7z
           7z x ${{ env.CPU_PKG_NAME }}.7z -aoa
 
       # 下载ncnn-vulkan-static
       - name: download ncnn-vulkan-static
         run: |
           cd ncnn-vulkan-static
-          wget https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.GPU_PKG_NAME }}.7z -O ${{ env.GPU_PKG_NAME }}.7z
+          Invoke-WebRequest -Uri https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.GPU_PKG_NAME }}.7z -OutFile ${{ env.GPU_PKG_NAME }}.7z
           7z x ${{ env.GPU_PKG_NAME }}.7z -aoa
 
       # 下载opencv-static
       - name: download opencv-static
         run: |
           cd opencv-static
-          wget https://github.com/RapidOCR/OpenCVBuilder/releases/download/${{ env.CV_VERSION }}/${{ env.CV_PKG_NAME }}.7z -O ${{ env.CV_PKG_NAME }}.7z
+          Invoke-WebRequest -Uri https://github.com/RapidOCR/OpenCVBuilder/releases/download/${{ env.CV_VERSION }}/${{ env.CV_PKG_NAME }}.7z -OutFile ${{ env.CV_PKG_NAME }}.7z
           7z x ${{ env.CV_PKG_NAME }}.7z -aoa
 
       # 编译
