@@ -1,0 +1,100 @@
+name: linux
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ubuntu1604:
+    runs-on: ubuntu-16.04
+
+    env:
+      NCNN_VERSION: 20210322
+      CPU_PKG_NAME: ncnn-20210322-ubuntu1604
+      GPU_PKG_NAME: ncnn-20210322-ubuntu1604-vulkan
+      CV_VERSION: 4.5.1
+      CV_PKG_NAME: opencv-4.5.1-ubuntu1604
+
+    steps:
+      # 检出代码
+      - uses: actions/checkout@v2
+
+      # 安装vulkan
+      - name: vulkansdk
+        if: steps.cache-vulkansdk.outputs.cache-hit != 'true'
+        run: |
+          wget https://sdk.lunarg.com/sdk/download/1.2.148.1/linux/vulkansdk-linux-x86_64-1.2.148.1.tar.gz?Human=true -O vulkansdk-linux-x86_64-1.2.148.1.tar.gz
+          tar -xf vulkansdk-linux-x86_64-1.2.148.1.tar.gz
+          rm -rf 1.2.148.1/source 1.2.148.1/samples
+          find 1.2.148.1 -type f | grep -v -E 'vulkan|glslang' | xargs rm
+
+      # 缓存vulkan
+      - name: cache-vulkansdk
+        id: cache-vulkansdk
+        uses: actions/cache@v1
+        with:
+          path: "1.2.148.1"
+          key: vulkansdk-linux-x86_64-1.2.148.1
+
+      # 下载ncnn-static
+      - name: download ncnn-static
+        run: |
+          cd ncnn-static
+          wget https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.CPU_PKG_NAME }}.7z -O ${{ env.CPU_PKG_NAME }}.7z
+          7z x ${{ env.CPU_PKG_NAME }}.7z -aoa
+
+      # 下载ncnn-vulkan-static
+      - name: download ncnn-vulkan-static
+        run: |
+          cd ncnn-vulkan-static
+          wget https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.GPU_PKG_NAME }}.7z -O ${{ env.GPU_PKG_NAME }}.7z
+          7z x ${{ env.GPU_PKG_NAME }}.7z -aoa
+
+      # 下载opencv-static
+      - name: download opencv-static
+        run: |
+          cd opencv-static
+          wget https://github.com/RapidOCR/OpenCVBuilder/releases/download/${{ env.CV_VERSION }}/${{ env.CV_PKG_NAME }}.7z -O ${{ env.CV_PKG_NAME }}.7z
+          7z x ${{ env.CV_PKG_NAME }}.7z -aoa
+
+      # 编译
+      - name: build
+        run: |
+          export VULKAN_SDK=`pwd`/1.2.148.1/x86_64
+          chmod a+x build-default.sh &&./build-default.sh
+
+      # 使用7z压缩
+      - name: 7zip
+        run: |
+          mv Linux-exe-cpu/install/bin Linux-exe-cpu
+          7z a Linux-exe-cpu.7z Linux-exe-cpu
+          mv Linux-exe-gpu/install/bin Linux-exe-gpu
+          7z a Linux-exe-gpu.7z Linux-exe-gpu
+          mv Linux-jni-cpu/install/sharedlib Linux-jni-cpu
+          7z a Linux-jni-cpu.7z Linux-jni-cpu
+          mv Linux-jni-gpu/install/sharedlib Linux-jni-gpu
+          7z a Linux-jni-gpu.7z Linux-jni-gpu
+
+      # 上传artifact
+      - name: upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Linux-exe-cpu
+          path: Linux-exe-cpu.7z
+
+      - name: upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Linux-exe-gpu
+          path: Linux-exe-gpu.7z
+
+      - name: upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Linux-jni-cpu
+          path: Linux-jni-cpu.7z
+
+      - name: upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Linux-jni-gpu
+          path: Linux-jni-gpu.7z
