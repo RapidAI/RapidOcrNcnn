@@ -24,7 +24,7 @@ else (echo "输入错误！Input Error!")
 echo.
 
 echo "请注意：如果选择2)JNI动态库时，必须安装配置Oracle JDK"
-echo "请选择编译输出类型并回车: 1)可执行文件，2)JNI动态库, 3)动态库, 4)静态库"
+echo "请选择编译输出类型并回车: 1)可执行文件，2)JNI动态库, 3)动态库(WIP), 4)静态库(WIP)"
 set BUILD_OUTPUT="EXE"
 set /p flag=
 if %flag% == 1 (set BUILD_OUTPUT="EXE")^
@@ -61,7 +61,7 @@ mkdir build
 pushd build
 cmake -T "%BUILD_CMAKE_T%,host=x64" -A %BUILD_CMAKE_A% ^
   -DCMAKE_INSTALL_PREFIX=install ^
-  -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOUTPUT_TYPE=%BUILD_OUTPUT% -DOCR_VULKAN=%BUILD_NCNN_VULKAN% ..
+  -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OUTPUT=%BUILD_OUTPUT% -DOCR_VULKAN=%BUILD_NCNN_VULKAN% ..
 cmake --build . --config %BUILD_TYPE% -j %NUMBER_OF_PROCESSORS%
 cmake --build . --config Release --target install
 popd
