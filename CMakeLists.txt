@@ -8,14 +8,14 @@ endif ()
 project(RapidOCRNcnn)
 
 if (NOT DEFINED OCR_OUTPUT)
-    set(OCR_OUTPUT "EXE")
-    message(STATUS "No OCR_OUTPUT, defaulting to EXE")
+    set(OCR_OUTPUT "BIN")
+    message(STATUS "No OCR_OUTPUT, defaulting to BIN")
 endif ()
 option(OCR_BENCHMARK "build benchmark" ON)
 option(OCR_VULKAN "OcrLite Enable Vulkan" OFF)
 set(OCR_BENCHMARK ON)
 #set(OCR_VULKAN OFF)
-#set(OCR_OUTPUT "EXE")
+#set(OCR_OUTPUT "BIN")
 
 set(CMAKE_CXX_STANDARD 11)
 add_definitions(-DUNICODE -D_UNICODE)
@@ -92,7 +92,7 @@ set(OCR_COMPILE_CODE ${OCR_SRC})
 #        set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 #    endif ()
 #endif ()
-if (OCR_OUTPUT STREQUAL "EXE")
+if (OCR_OUTPUT STREQUAL "BIN")
     add_executable(RapidOCRNcnn ${OCR_COMPILE_CODE})
     target_link_libraries(RapidOCRNcnn ncnn ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
 elseif (OCR_OUTPUT STREQUAL "JNI")
@@ -126,7 +126,7 @@ if (OCR_VULKAN)
 endif ()
 
 # benchmark
-if (OCR_BENCHMARK AND (OCR_OUTPUT STREQUAL "EXE"))
+if (OCR_BENCHMARK AND (OCR_OUTPUT STREQUAL "BIN"))
     add_executable(benchmark benchmark/benchmark.cpp
             src/AngleNet.cpp
             src/clipper.cpp

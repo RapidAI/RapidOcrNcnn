@@ -24,10 +24,10 @@ else (echo "输入错误！Input Error!")
 echo.
 
 echo "请注意：如果选择2)JNI动态库时，必须安装配置Oracle JDK"
-echo "请选择编译输出类型并回车: 1)可执行文件，2)JNI动态库, 3)动态库(WIP), 4)静态库(WIP)"
+echo "请选择编译输出类型并回车: 1)BIN可执行文件，2)JNI动态库, 3)动态库(WIP), 4)静态库(WIP)"
 set BUILD_OUTPUT="EXE"
 set /p flag=
-if %flag% == 1 (set BUILD_OUTPUT="EXE")^
+if %flag% == 1 (set BUILD_OUTPUT="BIN")^
 else if %flag% == 2 (set BUILD_OUTPUT="JNI")^
 else if %flag% == 3 (set BUILD_OUTPUT="SHARED")^
 else if %flag% == 4 (set BUILD_OUTPUT="STATIC")^

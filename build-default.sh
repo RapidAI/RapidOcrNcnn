@@ -12,16 +12,16 @@ else
   echo "Other OS: $sysOS"
 fi
 
-mkdir -p ${sysOS}-exe-cpu
-pushd ${sysOS}-exe-cpu
-cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release -DOCR_OUTPUT="EXE" -DOCR_VULKAN=OFF ..
+mkdir -p ${sysOS}-bin-cpu
+pushd ${sysOS}-bin-cpu
+cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release -DOCR_OUTPUT="BIN" -DOCR_VULKAN=OFF ..
 cmake --build . --config Release -j $NUM_THREADS
 cmake --build . --config Release --target install
 popd
 
-mkdir -p ${sysOS}-exe-gpu
-pushd ${sysOS}-exe-gpu
-cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release -DOCR_OUTPUT="EXE" -DOCR_VULKAN=ON ..
+mkdir -p ${sysOS}-bin-gpu
+pushd ${sysOS}-bin-gpu
+cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release -DOCR_OUTPUT="BIN" -DOCR_VULKAN=ON ..
 cmake --build . --config Release -j $NUM_THREADS
 cmake --build . --config Release --target install
 popd

@@ -25,10 +25,10 @@ else
 fi
 
 echo "请注意：如果选择2)JNI动态库时，必须安装配置Oracle JDK"
-echo "请选择编译输出类型并回车: 1)可执行文件，2)JNI动态库, 3)C动态库(WIP), 4)C静态库(WIP)"
+echo "请选择编译输出类型并回车: 1)BIN可执行文件，2)JNI动态库, 3)C动态库(WIP), 4)C静态库(WIP)"
 read -p "" BUILD_OUTPUT
 if [ $BUILD_OUTPUT == 1 ]; then
-  BUILD_OUTPUT="EXE"
+  BUILD_OUTPUT="BIN"
 elif [ $BUILD_OUTPUT == 2 ]; then
   BUILD_OUTPUT="JNI"
 elif [ $BUILD_OUTPUT == 3 ]; then

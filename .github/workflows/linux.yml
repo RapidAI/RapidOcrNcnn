@@ -65,36 +65,16 @@ jobs:
       # 使用7z压缩
       - name: 7zip
         run: |
-          mv Linux-exe-cpu/install/bin Linux-exe-cpu
-          7z a Linux-exe-cpu.7z Linux-exe-cpu
-          mv Linux-exe-gpu/install/bin Linux-exe-gpu
-          7z a Linux-exe-gpu.7z Linux-exe-gpu
-          mv Linux-jni-cpu/install/sharedlib Linux-jni-cpu
-          7z a Linux-jni-cpu.7z Linux-jni-cpu
-          mv Linux-jni-gpu/install/sharedlib Linux-jni-gpu
-          7z a Linux-jni-gpu.7z Linux-jni-gpu
+          mkdir linux
+          mv Linux-bin-cpu/install/bin linux/Linux-bin-cpu
+          mv Linux-bin-gpu/install/bin linux/Linux-bin-gpu
+          mv Linux-jni-cpu/install/sharedlib linux/Linux-jni-cpu
+          mv Linux-jni-gpu/install/sharedlib linux/Linux-jni-gpu
+          7z a linux.7z linux
 
       # 上传artifact
       - name: upload
         uses: actions/upload-artifact@v2
         with:
-          name: Linux-exe-cpu
-          path: Linux-exe-cpu.7z
-
-      - name: upload
-        uses: actions/upload-artifact@v2
-        with:
-          name: Linux-exe-gpu
-          path: Linux-exe-gpu.7z
-
-      - name: upload
-        uses: actions/upload-artifact@v2
-        with:
-          name: Linux-jni-cpu
-          path: Linux-jni-cpu.7z
-
-      - name: upload
-        uses: actions/upload-artifact@v2
-        with:
-          name: Linux-jni-gpu
-          path: Linux-jni-gpu.7z
+          name: Linux
+          path: Linux.7z
