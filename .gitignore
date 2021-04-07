@@ -142,5 +142,5 @@ models/*.bin
 !/ncnn-static/NcnnWrapperConfig.cmake
 /ncnn-vulkan-static/*
 !/ncnn-vulkan-static/NcnnWrapperConfig.cmake
-/opencv-static/
-/opencv-shared/
+/opencv-static/*
+!/opencv-static/OpenCVWrapperConfig.cmake
