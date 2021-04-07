@@ -23,7 +23,7 @@ onnx2ncnn转换工具未完全支持，部分模型转换出错，目前关闭cl
 
 未完成
 
-### ncnn cpu 下载
+### 依赖库ncnn cpu 下载
 
 Linux和Windows系统使用官方发布包[ncnn20210322](https://github.com/Tencent/ncnn/releases/tag/20210322)
 
@@ -35,10 +35,10 @@ cpu版解压放入RapidOCRNcnnCpp/ncnn-static
 
 | 操作系统 | 软件包 |
 | ------- | ------- |
-| macos10.15 cpu | [ncnn-20210322-macos.7z](https://github.com/RapidOCR/NcnnBuilder/releases/download/20210322/ncnn-20210322-macos.7z) |
-| ubuntu16.04 cpu|  |
-| windows vs2017 cpu |  |
-| windows vs2019 cpu |  |
+| macos10.15 cpu | [ncnn-20210322-macos.7z](https://github.com/RapidOCR/NcnnBuilder/releases/download/20210322/ncnn-20210322-macos1015.7z) |
+| ubuntu16.04 cpu| [ncnn-20210322-ubuntu1604.7z](https://github.com/RapidOCR/NcnnBuilder/releases/download/20210322/ncnn-20210322-ubuntu1604.7z) |
+| windows vs2017 cpu | [ncnn-20210322-windows-vs2017.7z](https://github.com/RapidOCR/NcnnBuilder/releases/download/20210322/ncnn-20210322-windows-vs2017.7z) |
+| windows vs2019 cpu | [ncnn-20210322-windows-vs2019.7z](https://github.com/RapidOCR/NcnnBuilder/releases/download/20210322/ncnn-20210322-windows-vs2019.7z) |
 
 解压后文件目录结构如下
 
@@ -51,12 +51,12 @@ RapidOCRNcnnCpp/ncnn-static
 └── windows-x86
 ```
 
-### ncnn gpu 下载
+### 依赖库ncnn gpu 下载
 
 | 操作系统 | 软件包 |
 | ------- | ------- |
-| macos10.15 gpu| [ncnn-20210322-macos-vulkan.7z](https://github.com/RapidOCR/NcnnBuilder/releases/download/20210322/ncnn-20210322-macos-vulkan.7z) |
-| ubuntu16.04 gpu| [ncnn-20210322-ubuntu-1604.zip](https://github.com/Tencent/ncnn/releases/download/20210322/ncnn-20210322-ubuntu-1604.zip) |
+| macos10.15 gpu| [ncnn-20210322-macos1015-vulkan.7z](https://github.com/RapidOCR/NcnnBuilder/releases/download/20210322/ncnn-20210322-macos1015-vulkan.7z) |
+| ubuntu16.04 gpu| [ncnn-20210322-ubuntu1604-vulkan.7z](https://github.com/RapidOCR/NcnnBuilder/releases/download/20210322/ncnn-20210322-ubuntu1604-vulkan.7z) |
 | windows vs2017 gpu | [ncnn-20210322-windows-vs2017.zip](https://github.com/Tencent/ncnn/releases/download/20210322/ncnn-20210322-windows-vs2017.zip) |
 | windows vs2019 gpu | [ncnn-20210322-windows-vs2019.zip](https://github.com/Tencent/ncnn/releases/download/20210322/ncnn-20210322-windows-vs2019.zip) |
 
@@ -65,13 +65,13 @@ gpu版解压放入RapidOCRNcnnCpp/ncnn-vulkan-static
 ```
 RapidOCRNcnnCpp/ncnn-vulkan-static
 ├── NcnnWrapperConfig.cmake
-├── linux(文件夹名ncnn-20210322-ubuntu-1604修改)
+├── linux
 ├── macos
 ├── windows-x64(文件夹名x64修改)
 └── windows-x86(文件夹名x86修改)
 ```
 
-### opencv下载
+### 依赖库opencv下载
 
 [定制精简版OpenCV](https://github.com/RapidOCR/OpenCVBuilder)
 
@@ -94,9 +94,3 @@ RapidOCRNcnnCpp/opencv-static
 ```
 
 ### macOS编译
-
-```shell
-brew doctor
-sudo rm -rf /Library/Developer/CommandLineTools
-sudo xcode-select --install
-```
