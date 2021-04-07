@@ -55,6 +55,6 @@ mkdir -p build
 pushd build
 echo "cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DOCR_OUTPUT=${BUILD_OUTPUT} -DOCR_VULKAN=${BUILD_VULKAN} .."
 cmake -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOCR_OUTPUT=$BUILD_OUTPUT -DOCR_VULKAN=$BUILD_VULKAN ..
-cmake --build . --config %BUILD_TYPE% -j $NUM_THREADS
-cmake --build . --config Release --target install
+cmake --build . --config $BUILD_TYPE -j $NUM_THREADS
+cmake --build . --config $BUILD_TYPE --target install
 popd
