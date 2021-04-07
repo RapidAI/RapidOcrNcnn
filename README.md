@@ -57,8 +57,8 @@ RapidOCRNcnnCpp/ncnn-static
 | ------- | ------- |
 | macos10.15 gpu| [ncnn-20210322-macos1015-vulkan.7z](https://github.com/RapidOCR/NcnnBuilder/releases/download/20210322/ncnn-20210322-macos1015-vulkan.7z) |
 | ubuntu16.04 gpu| [ncnn-20210322-ubuntu1604-vulkan.7z](https://github.com/RapidOCR/NcnnBuilder/releases/download/20210322/ncnn-20210322-ubuntu1604-vulkan.7z) |
-| windows vs2017 gpu | [ncnn-20210322-windows-vs2017.zip](https://github.com/Tencent/ncnn/releases/download/20210322/ncnn-20210322-windows-vs2017.zip) |
-| windows vs2019 gpu | [ncnn-20210322-windows-vs2019.zip](https://github.com/Tencent/ncnn/releases/download/20210322/ncnn-20210322-windows-vs2019.zip) |
+| windows vs2017 gpu | [ncnn-20210322-windows-vs2017-vulkan.7z](https://github.com/RapidOCR/NcnnBuilder/releases/download/20210322/ncnn-20210322-windows-vs2017-vulkan.7z) |
+| windows vs2019 gpu | [ncnn-20210322-windows-vs2019-vulkan.7z](https://github.com/RapidOCR/NcnnBuilder/releases/download/20210322/ncnn-20210322-windows-vs2019-vulkan.7z) |
 
 gpu版解压放入RapidOCRNcnnCpp/ncnn-vulkan-static
 
