@@ -73,6 +73,9 @@ jobs:
       - name: 7zip
         run: |
           mkdir macos-bin
+          cp scripts/run-benchmark-cn.sh macos-bin/run-benchmark-cn.sh
+          cp scripts/run-test-cn.sh macos-bin/run-test-cn.sh
+          cp -r images macos-bin/images
           mv Darwin-bin-cpu/install/bin macos-bin/Darwin-bin-cpu
           mv Darwin-bin-gpu/install/bin macos-bin/Darwin-bin-gpu
           7z a macos-bin.7z macos-bin

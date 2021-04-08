@@ -66,6 +66,9 @@ jobs:
       - name: 7zip
         run: |
           mkdir linux-bin
+          cp scripts/run-benchmark-cn.sh linux-bin/run-benchmark-cn.sh
+          cp scripts/run-test-cn.sh linux-bin/run-test-cn.sh
+          cp -r images linux-bin/images
           mv Linux-bin-cpu/install/bin linux-bin/Linux-bin-cpu
           mv Linux-bin-gpu/install/bin linux-bin/Linux-bin-gpu
           7z a linux-bin.7z linux-bin

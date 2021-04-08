@@ -65,14 +65,17 @@ jobs:
       - name: 7zip
         run: |
           mkdir windows-bin
+          cp scripts/run-benchmark-cn.bat windows-bin/run-benchmark-cn.bat
+          cp scripts/run-test-cn.bat windows-bin/run-test-cn.bat
+          cp -r images windows-bin/images
           mv win-bin-x64-cpu/install/bin windows-bin/win-bin-x64-cpu
           mv win-bin-x86-cpu/install/bin windows-bin/win-bin-x86-cpu
-          mv win-jni-x64-cpu/install/bin windows-bin/win-jni-x64-cpu
-          mv win-jni-x86-cpu/install/bin windows-bin/win-jni-x86-cpu
+          mv win-bin-x64-gpu/install/bin windows-bin/win-bin-x64-gpu
+          mv win-bin-x86-gpu/install/bin windows-bin/win-bin-x86-gpu
           7z a windows-bin.7z windows-bin
           mkdir windows-jni
-          mv win-bin-x64-gpu/install/bin windows-jni/win-bin-x64-gpu
-          mv win-bin-x86-gpu/install/bin windows-jni/win-bin-x86-gpu
+          mv win-jni-x64-cpu/install/bin windows-jni/win-jni-x64-cpu
+          mv win-jni-x86-cpu/install/bin windows-jni/win-jni-x86-cpu
           mv win-jni-x64-gpu/install/bin windows-jni/win-jni-x64-gpu
           mv win-jni-x86-gpu/install/bin windows-jni/win-jni-x86-gpu
           7z a windows-jni.7z windows-jni

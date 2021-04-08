@@ -69,6 +69,9 @@ jobs:
       - name: 7zip
         run: |
           mkdir linux-bin
+          cp scripts/run-benchmark-cn.sh linux-bin/run-benchmark-cn.sh
+          cp scripts/run-test-cn.sh linux-bin/run-test-cn.sh
+          cp -r images linux-bin/images
           mv Linux-bin-cpu/install/bin linux-bin/Linux-bin-cpu
           mv Linux-bin-gpu/install/bin linux-bin/Linux-bin-gpu
           7z a linux-bin.7z linux-bin
@@ -159,6 +162,9 @@ jobs:
       - name: 7zip
         run: |
           mkdir macos-bin
+          cp scripts/run-benchmark-cn.sh macos-bin/run-benchmark-cn.sh
+          cp scripts/run-test-cn.sh macos-bin/run-test-cn.sh
+          cp -r images macos-bin/images
           mv Darwin-bin-cpu/install/bin macos-bin/Darwin-bin-cpu
           mv Darwin-bin-gpu/install/bin macos-bin/Darwin-bin-gpu
           7z a macos-bin.7z macos-bin
@@ -241,14 +247,17 @@ jobs:
       - name: 7zip
         run: |
           mkdir windows-bin
+          cp scripts/run-benchmark-cn.bat windows-bin/run-benchmark-cn.bat
+          cp scripts/run-test-cn.bat windows-bin/run-test-cn.bat
+          cp -r images windows-bin/images
           mv win-bin-x64-cpu/install/bin windows-bin/win-bin-x64-cpu
           mv win-bin-x86-cpu/install/bin windows-bin/win-bin-x86-cpu
-          mv win-jni-x64-cpu/install/bin windows-bin/win-jni-x64-cpu
-          mv win-jni-x86-cpu/install/bin windows-bin/win-jni-x86-cpu
+          mv win-bin-x64-gpu/install/bin windows-bin/win-bin-x64-gpu
+          mv win-bin-x86-gpu/install/bin windows-bin/win-bin-x86-gpu
           7z a windows-bin.7z windows-bin
           mkdir windows-jni
-          mv win-bin-x64-gpu/install/bin windows-jni/win-bin-x64-gpu
-          mv win-bin-x86-gpu/install/bin windows-jni/win-bin-x86-gpu
+          mv win-jni-x64-cpu/install/bin windows-jni/win-jni-x64-cpu
+          mv win-jni-x86-cpu/install/bin windows-jni/win-jni-x86-cpu
           mv win-jni-x64-gpu/install/bin windows-jni/win-jni-x64-gpu
           mv win-jni-x86-gpu/install/bin windows-jni/win-jni-x86-gpu
           7z a windows-jni.7z windows-jni
