@@ -135,7 +135,10 @@ dmypy.json
 cmake-build-debug/
 build/
 build-lib/
-images/
+images/*
+!images/1.jpg
+!images/clear.cmd
+!images/clear.sh
 models/*.param
 models/*.bin
 /ncnn-static/*
