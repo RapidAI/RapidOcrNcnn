@@ -64,20 +64,28 @@ jobs:
       # 使用7z压缩
       - name: 7zip
         run: |
-          mkdir windows
-          mv win-bin-x64-cpu/install/bin windows/win-bin-x64-cpu
-          mv win-bin-x86-cpu/install/bin windows/win-bin-x86-cpu
-          mv win-bin-x64-gpu/install/bin windows/win-bin-x64-gpu
-          mv win-bin-x86-gpu/install/bin windows/win-bin-x86-gpu
-          mv win-jni-x64-cpu/install/bin windows/win-jni-x64-cpu
-          mv win-jni-x86-cpu/install/bin windows/win-jni-x86-cpu
-          mv win-jni-x64-gpu/install/bin windows/win-jni-x64-gpu
-          mv win-jni-x86-gpu/install/bin windows/win-jni-x86-gpu
-          7z a windows.7z windows
+          mkdir windows-bin
+          mv win-bin-x64-cpu/install/bin windows-bin/win-bin-x64-cpu
+          mv win-bin-x86-cpu/install/bin windows-bin/win-bin-x86-cpu
+          mv win-jni-x64-cpu/install/bin windows-bin/win-jni-x64-cpu
+          mv win-jni-x86-cpu/install/bin windows-bin/win-jni-x86-cpu
+          7z a windows-bin.7z windows-bin
+          mkdir windows-jni
+          mv win-bin-x64-gpu/install/bin windows-jni/win-bin-x64-gpu
+          mv win-bin-x86-gpu/install/bin windows-jni/win-bin-x86-gpu
+          mv win-jni-x64-gpu/install/bin windows-jni/win-jni-x64-gpu
+          mv win-jni-x86-gpu/install/bin windows-jni/win-jni-x86-gpu
+          7z a windows-jni.7z windows-jni
 
       # 上传artifact
       - name: upload
         uses: actions/upload-artifact@v2
         with:
-          name: windows
-          path: windows.7z
+          name: windows-bin
+          path: windows-bin.7z
+
+      - name: upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-jni
+          path: windows-jni.7z

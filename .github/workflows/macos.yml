@@ -72,16 +72,24 @@ jobs:
       # 使用7z压缩
       - name: 7zip
         run: |
-          mkdir macos
-          mv Darwin-bin-cpu/install/bin macos/Darwin-bin-cpu
-          mv Darwin-bin-gpu/install/bin macos/Darwin-bin-gpu
-          mv Darwin-jni-cpu/install/sharedlib macos/Darwin-jni-cpu
-          mv Darwin-jni-gpu/install/sharedlib macos/Darwin-jni-gpu
-          7z a macos.7z macos
+          mkdir macos-bin
+          mv Darwin-bin-cpu/install/bin macos-bin/Darwin-bin-cpu
+          mv Darwin-bin-gpu/install/bin macos-bin/Darwin-bin-gpu
+          7z a macos-bin.7z macos-bin
+          mkdir macos-jni
+          mv Darwin-jni-cpu/install/sharedlib macos-jni/Darwin-jni-cpu
+          mv Darwin-jni-gpu/install/sharedlib macos-jni/Darwin-jni-gpu
+          7z a macos-jni.7z macos-jni
 
       # 上传artifact
       - name: upload
         uses: actions/upload-artifact@v2
         with:
-          name: macos
-          path: macos.7z
+          name: macos-bin
+          path: macos-bin.7z
+
+      - name: upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos-jni
+          path: macos-jni.7z
