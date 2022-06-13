@@ -7,15 +7,17 @@
 
 ### 介绍
 
+本项目已停止更新。
+
 RapidOCR ncnn 推理
 
-模型转换路线: paddle-> onnx -> onnx-simplifier -> ncnn
+~~模型转换路线: paddle-> onnx -> onnx-simplifier -> ncnn~~
 
-onnx2ncnn转换工具未完全支持，部分模型转换出错，目前关闭cls模型来使用
+~~onnx2ncnn转换工具未完全支持，部分模型转换出错，目前关闭cls模型来使用~~
 
-转换成功的模型：mobile_det,server_det,server_rec
+~~转换成功的模型：mobile_det,server_det,server_rec~~
 
-转换失败的模型：mobile_cls,mobile_rec
+~~转换失败的模型：mobile_cls,mobile_rec~~
 
 ### [模型转换说明](./models/README.md)
 

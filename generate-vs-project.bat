@@ -6,7 +6,7 @@ echo "========请先参考README.md准备好编译环境========"
 echo.
 
 echo "========编译选项========"
-echo "请注意：项目默认使用Release库，除非您自行编译Debug版的Onnxruntime和Opencv，否则请不要选择Debug编译"
+echo "请注意：项目默认使用Release库，除非您自行编译Debug版的Ncnn和Opencv，否则请不要选择Debug编译"
 echo "请输入编译选项并回车: 1)Release, 2)Debug"
 set BUILD_TYPE=Release
 set /p flag=
@@ -25,7 +25,7 @@ echo.
 
 echo "使用静态库时，编译出来的可执行文件较大，但部署起来比较方便。"
 echo "使用动态库时，编译出来的可执行文件较小，但部署的时候记得把dll复制到可执行文件目录"
-echo "请选择要使用的OnnxRuntime和Opencv库选项并回车: 1)Static静态库，2)Shared动态库"
+echo "请选择要使用的Opencv库选项并回车: 1)Static静态库，2)Shared动态库"
 set BUILD_STATIC=ON
 set /p flag=
 if %flag% == 1 (set BUILD_STATIC=ON)^

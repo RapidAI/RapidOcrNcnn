@@ -46,7 +46,7 @@ fi
 ./build/install/bin/RapidOCRNcnn --version
 ./build/install/bin/RapidOCRNcnn --models models \
 --det $DET_MODEL \
---cls ch_ppocr_mobile_v2.0_cls_infer \
+--cls general_mobile_direction_cls \
 --rec $REC_MODEL \
 --keys ppocr_keys_v1.txt \
 --image $TARGET_IMG \
@@ -56,5 +56,5 @@ fi
 --boxScoreThresh 0.5 \
 --boxThresh 0.3 \
 --unClipRatio 1.5 \
---doAngle 0 \
+--doAngle 1 \
 --mostAngle 0 -G 0
