@@ -7,105 +7,107 @@ on:
       - '*'
 
 jobs:
-  ubuntu1604:
-    runs-on: ubuntu-16.04
+  ubuntu1804:
+    runs-on: ubuntu-18.04
 
     env:
-      NCNN_VERSION: 20210322
-      CPU_PKG_NAME: ncnn-20210322-ubuntu1604
-      GPU_PKG_NAME: ncnn-20210322-ubuntu1604-vulkan
-      CV_VERSION: 4.5.1
-      CV_PKG_NAME: opencv-4.5.1-ubuntu1604
+      NCNN_VERSION: 20220729
+      CPU_PKG_NAME: ncnn-20220729-ubuntu1804
+      GPU_PKG_NAME: ncnn-20220729-ubuntu1804-vulkan
+      CV_VERSION: 4.6.0
+      CV_PKG_NAME: opencv-4.6.0-ubuntu1804
 
     steps:
       # 检出代码
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # 安装vulkan
       - name: vulkansdk
-        if: steps.cache-vulkansdk.outputs.cache-hit != 'true'
         run: |
-          wget https://sdk.lunarg.com/sdk/download/1.2.162.0/linux/vulkansdk-linux-x86_64-1.2.162.0.tar.gz?Human=true -O vulkansdk-linux-x86_64-1.2.162.0.tar.gz
-          tar -xf vulkansdk-linux-x86_64-1.2.162.0.tar.gz
-          rm -rf 1.2.162.0/source 1.2.162.0/samples
-          find 1.2.162.0 -type f | grep -v -E 'vulkan|glslang' | xargs rm
-
-      # 缓存vulkan
-      - name: cache-vulkansdk
-        id: cache-vulkansdk
-        uses: actions/cache@v1
-        with:
-          path: "1.2.162.0"
-          key: vulkansdk-linux-x86_64-1.2.162.0
+          wget https://sdk.lunarg.com/sdk/download/1.2.189.0/linux/vulkansdk-linux-x86_64-1.2.189.0.tar.gz?Human=true -O vulkansdk-linux-x86_64-1.2.189.0.tar.gz
+          tar -xf vulkansdk-linux-x86_64-1.2.189.0.tar.gz
+          rm -rf 1.2.189.0/source 1.2.189.0/samples
+          find 1.2.189.0 -type f | grep -v -E 'vulkan|glslang' | xargs rm
 
       # 下载ncnn-static
       - name: download ncnn-static
         run: |
           cd ncnn-static
-          wget https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.CPU_PKG_NAME }}.7z -O ${{ env.CPU_PKG_NAME }}.7z
+          wget https://github.com/benjaminwan/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.CPU_PKG_NAME }}.7z -O ${{ env.CPU_PKG_NAME }}.7z
           7z x ${{ env.CPU_PKG_NAME }}.7z -aoa
 
       # 下载ncnn-vulkan-static
       - name: download ncnn-vulkan-static
         run: |
           cd ncnn-vulkan-static
-          wget https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.GPU_PKG_NAME }}.7z -O ${{ env.GPU_PKG_NAME }}.7z
+          wget https://github.com/benjaminwan/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.GPU_PKG_NAME }}.7z -O ${{ env.GPU_PKG_NAME }}.7z
           7z x ${{ env.GPU_PKG_NAME }}.7z -aoa
 
       # 下载opencv-static
       - name: download opencv-static
         run: |
           cd opencv-static
-          wget https://github.com/RapidOCR/OpenCVBuilder/releases/download/${{ env.CV_VERSION }}/${{ env.CV_PKG_NAME }}.7z -O ${{ env.CV_PKG_NAME }}.7z
+          wget https://github.com/RapidAI/OpenCVBuilder/releases/download/${{ env.CV_VERSION }}/${{ env.CV_PKG_NAME }}.7z -O ${{ env.CV_PKG_NAME }}.7z
           7z x ${{ env.CV_PKG_NAME }}.7z -aoa
 
       # 编译
       - name: build
         run: |
-          export VULKAN_SDK=`pwd`/1.2.162.0/x86_64
+          export VULKAN_SDK=`pwd`/1.2.189.0/x86_64
+          export PATH=`pwd`/1.2.189.0/x86_64/bin:$PATH
           chmod a+x build-default.sh &&./build-default.sh
 
       # 使用7z压缩
       - name: 7zip
         run: |
           mkdir linux-bin
-          cp scripts/run-benchmark-cn.sh linux-bin/run-benchmark-cn.sh
-          cp scripts/run-test-cn.sh linux-bin/run-test-cn.sh
+          cp run-benchmark.sh linux-bin/run-benchmark.sh
+          cp run-test.sh linux-bin/run-test.sh
           cp -r images linux-bin/images
-          mv Linux-bin-cpu/install/bin linux-bin/Linux-bin-cpu
-          mv Linux-bin-gpu/install/bin linux-bin/Linux-bin-gpu
+          mv Linux-BIN-CPU/install/bin linux-bin/Linux-BIN-CPU
+          mv Linux-BIN-GPU/install/bin linux-bin/Linux-BIN-GPU
           7z a linux-bin.7z linux-bin
           mkdir linux-jni
-          mv Linux-jni-cpu/install/sharedlib linux-jni/Linux-jni-cpu
-          mv Linux-jni-gpu/install/sharedlib linux-jni/Linux-jni-gpu
+          mv Linux-JNI-CPU/install linux-jni/Linux-JNI-CPU
+          mv Linux-JNI-GPU/install linux-jni/Linux-JNI-GPU
           7z a linux-jni.7z linux-jni
+          mkdir linux-clib
+          mv Linux-CLIB-CPU/install linux-clib/Linux-CLIB-CPU
+          mv Linux-CLIB-GPU/install linux-clib/Linux-CLIB-GPU
+          7z a linux-clib.7z linux-clib
 
       # 上传artifact
       - name: upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: linux-bin
           path: linux-bin.7z
 
       - name: upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: linux-jni
           path: linux-jni.7z
+
+      - name: upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-clib
+          path: linux-clib.7z
 
   macos1015:
     runs-on: macos-latest
 
     env:
-      NCNN_VERSION: 20210322
-      CPU_PKG_NAME: ncnn-20210322-macos1015
-      GPU_PKG_NAME: ncnn-20210322-macos1015-vulkan
-      CV_VERSION: 4.5.1
-      CV_PKG_NAME: opencv-4.5.1-macos1015
+      NCNN_VERSION: 20220729
+      CPU_PKG_NAME: ncnn-20220729-macos1015
+      GPU_PKG_NAME: ncnn-20220729-macos1015-vulkan
+      CV_VERSION: 4.6.0
+      CV_PKG_NAME: opencv-4.6.0-macos1015
 
     steps:
       # 检出代码
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # 安装openmp
       - name: install openmp
@@ -114,175 +116,178 @@ jobs:
 
       # 安装vulkan
       - name: vulkansdk
-        if: steps.cache-vulkansdk.outputs.cache-hit != 'true'
         run: |
-          wget https://sdk.lunarg.com/sdk/download/1.2.162.0/mac/vulkansdk-macos-1.2.162.0.dmg?Human=true -O vulkansdk-macos-1.2.162.0.dmg
-          hdiutil attach vulkansdk-macos-1.2.162.0.dmg
-          cp -r /Volumes/vulkansdk-macos-1.2.162.0 .
-          rm -rf vulkansdk-macos-1.2.162.0/Applications
-          find vulkansdk-macos-1.2.162.0 -type f | grep -v -E 'vulkan|glslang|MoltenVK' | xargs rm
-          hdiutil detach /Volumes/vulkansdk-macos-1.2.162.0
-
-      # 缓存vulkan
-      - name: cache-vulkansdk
-        id: cache-vulkansdk
-        uses: actions/cache@v1
-        with:
-          path: vulkansdk-macos-1.2.162.0
-          key: vulkansdk-macos-1.2.162.0
+          wget https://sdk.lunarg.com/sdk/download/1.2.189.0/mac/vulkansdk-macos-1.2.189.0.dmg?Human=true -O vulkansdk-macos-1.2.189.0.dmg
+          hdiutil attach vulkansdk-macos-1.2.189.0.dmg
+          sudo /Volumes/vulkansdk-macos-1.2.189.0/InstallVulkan.app/Contents/MacOS/InstallVulkan --root $GITHUB_WORKSPACE/vulkansdk-macos-1.2.189.0 --accept-licenses --default-answer --confirm-command install
+          hdiutil detach /Volumes/vulkansdk-macos-1.2.189.0
 
       # 下载ncnn-static
       - name: download ncnn-static
         run: |
           cd ncnn-static
-          wget https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.CPU_PKG_NAME }}.7z -O ${{ env.CPU_PKG_NAME }}.7z
+          wget https://github.com/benjaminwan/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.CPU_PKG_NAME }}.7z -O ${{ env.CPU_PKG_NAME }}.7z
           7z x ${{ env.CPU_PKG_NAME }}.7z -aoa
 
       # 下载ncnn-vulkan-static
       - name: download ncnn-vulkan-static
         run: |
           cd ncnn-vulkan-static
-          wget https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.GPU_PKG_NAME }}.7z -O ${{ env.GPU_PKG_NAME }}.7z
+          wget https://github.com/benjaminwan/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.GPU_PKG_NAME }}.7z -O ${{ env.GPU_PKG_NAME }}.7z
           7z x ${{ env.GPU_PKG_NAME }}.7z -aoa
 
       # 下载opencv-static
       - name: download opencv-static
         run: |
           cd opencv-static
-          wget https://github.com/RapidOCR/OpenCVBuilder/releases/download/${{ env.CV_VERSION }}/${{ env.CV_PKG_NAME }}.7z -O ${{ env.CV_PKG_NAME }}.7z
+          wget https://github.com/RapidAI/OpenCVBuilder/releases/download/${{ env.CV_VERSION }}/${{ env.CV_PKG_NAME }}.7z -O ${{ env.CV_PKG_NAME }}.7z
           7z x ${{ env.CV_PKG_NAME }}.7z -aoa
 
       # 编译
       - name: build
         run: |
-          export VULKAN_SDK=`pwd`/vulkansdk-macos-1.2.162.0/macOS
+          export VULKAN_SDK=$GITHUB_WORKSPACE/vulkansdk-macos-1.2.189.0/macOS
           chmod a+x build-default.sh &&./build-default.sh
 
       # 使用7z压缩
       - name: 7zip
         run: |
           mkdir macos-bin
-          cp scripts/run-benchmark-cn.sh macos-bin/run-benchmark-cn.sh
-          cp scripts/run-test-cn.sh macos-bin/run-test-cn.sh
+          cp run-benchmark.sh macos-bin/run-benchmark.sh
+          cp run-test.sh macos-bin/run-test.sh
           cp -r images macos-bin/images
-          mv Darwin-bin-cpu/install/bin macos-bin/Darwin-bin-cpu
-          mv Darwin-bin-gpu/install/bin macos-bin/Darwin-bin-gpu
+          mv Darwin-BIN-CPU/install/bin macos-bin/Darwin-BIN-CPU
+          mv Darwin-BIN-GPU/install/bin macos-bin/Darwin-BIN-GPU
           7z a macos-bin.7z macos-bin
           mkdir macos-jni
-          mv Darwin-jni-cpu/install/sharedlib macos-jni/Darwin-jni-cpu
-          mv Darwin-jni-gpu/install/sharedlib macos-jni/Darwin-jni-gpu
+          mv Darwin-JNI-CPU/install macos-jni/Darwin-JNI-CPU
+          mv Darwin-JNI-GPU/install macos-jni/Darwin-JNI-GPU
           7z a macos-jni.7z macos-jni
+          mkdir macos-clib
+          mv Darwin-CLIB-CPU/install macos-clib/Darwin-CLIB-CPU
+          mv Darwin-CLIB-GPU/install macos-clib/Darwin-CLIB-GPU
+          7z a macos-clib.7z macos-clib
 
       # 上传artifact
       - name: upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: macos-bin
           path: macos-bin.7z
 
       - name: upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: macos-jni
           path: macos-jni.7z
 
-  windows-vs2017:
-    runs-on: windows-2016
+      - name: upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-clib
+          path: macos-clib.7z
+
+  windows-vs2019:
+    runs-on: windows-2019
 
     env:
-      NCNN_VERSION: 20210322
-      CPU_PKG_NAME: ncnn-20210322-windows-vs2017
-      GPU_PKG_NAME: ncnn-20210322-windows-vs2017-vulkan
-      CV_VERSION: 4.5.1
-      CV_PKG_NAME: opencv-4.5.1-windows-vs2017
+      NCNN_VERSION: 20220729
+      CPU_PKG_NAME: ncnn-20220729-windows-vs2019-mt
+      GPU_PKG_NAME: ncnn-20220729-windows-vs2019-vulkan-mt
+      CV_VERSION: 4.6.0
+      CV_PKG_NAME: opencv-4.6.0-windows-vs2019-mt
 
     steps:
       # 检出代码
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # 安装vulkan
       - name: vulkansdk
-        if: steps.cache-vulkansdk.outputs.cache-hit != 'true'
         run: |
-          Invoke-WebRequest -Uri https://sdk.lunarg.com/sdk/download/1.2.162.0/windows/VulkanSDK-1.2.162.0-Installer.exe?Human=true -OutFile VulkanSDK-1.2.162.0-Installer.exe
-          7z x -aoa ./VulkanSDK-1.2.162.0-Installer.exe -oVulkanSDK
-          Remove-Item .\VulkanSDK\Demos, .\VulkanSDK\Samples, .\VulkanSDK\Third-Party, .\VulkanSDK\Tools, .\VulkanSDK\Tools32 -Recurse
-
-      # 缓存vulkan
-      - name: cache-vulkansdk
-        id: cache-vulkansdk
-        uses: actions/cache@v1.0.3
-        with:
-          path: "VulkanSDK"
-          key: VulkanSDK-1.2.162.0-Installer
+          Invoke-WebRequest -Uri https://sdk.lunarg.com/sdk/download/1.2.189.0/windows/VulkanSDK-1.2.189.0-Installer.exe?Human=true -OutFile VulkanSDK.exe
+          $installer = Start-Process -FilePath VulkanSDK.exe -Wait -PassThru -ArgumentList @("/S");
+          $installer.WaitForExit();
 
       # 下载ncnn-static
       - name: download ncnn-static
         run: |
           cd ncnn-static
-          Invoke-WebRequest -Uri https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.CPU_PKG_NAME }}.7z -OutFile ${{ env.CPU_PKG_NAME }}.7z
+          Invoke-WebRequest -Uri https://github.com/benjaminwan/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.CPU_PKG_NAME }}.7z -OutFile ${{ env.CPU_PKG_NAME }}.7z
           7z x ${{ env.CPU_PKG_NAME }}.7z -aoa
 
       # 下载ncnn-vulkan-static
       - name: download ncnn-vulkan-static
         run: |
           cd ncnn-vulkan-static
-          Invoke-WebRequest -Uri https://github.com/RapidOCR/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.GPU_PKG_NAME }}.7z -OutFile ${{ env.GPU_PKG_NAME }}.7z
+          Invoke-WebRequest -Uri https://github.com/benjaminwan/NcnnBuilder/releases/download/${{ env.NCNN_VERSION }}/${{ env.GPU_PKG_NAME }}.7z -OutFile ${{ env.GPU_PKG_NAME }}.7z
           7z x ${{ env.GPU_PKG_NAME }}.7z -aoa
 
       # 下载opencv-static
       - name: download opencv-static
         run: |
           cd opencv-static
-          Invoke-WebRequest -Uri https://github.com/RapidOCR/OpenCVBuilder/releases/download/${{ env.CV_VERSION }}/${{ env.CV_PKG_NAME }}.7z -OutFile ${{ env.CV_PKG_NAME }}.7z
+          Invoke-WebRequest -Uri https://github.com/RapidAI/OpenCVBuilder/releases/download/${{ env.CV_VERSION }}/${{ env.CV_PKG_NAME }}.7z -OutFile ${{ env.CV_PKG_NAME }}.7z
           7z x ${{ env.CV_PKG_NAME }}.7z -aoa
 
       # 编译
       - name: build
         run: |
-          $env:VULKAN_SDK="$(pwd)/VulkanSDK"
+          $env:VULKAN_SDK="C:/VulkanSDK/1.2.189.0"
+          $env:Path+=";C:/VulkanSDK/1.2.189.0/Bin"
           ./build-default.bat
 
       # 使用7z压缩
       - name: 7zip
         run: |
           mkdir windows-bin
-          cp scripts/run-benchmark-cn.bat windows-bin/run-benchmark-cn.bat
-          cp scripts/run-test-cn.bat windows-bin/run-test-cn.bat
+          cp run-benchmark.bat windows-bin/run-benchmark.bat
+          cp run-test.bat windows-bin/run-test.bat
           cp -r images windows-bin/images
-          mv win-bin-x64-cpu/install/bin windows-bin/win-bin-x64-cpu
-          mv win-bin-x86-cpu/install/bin windows-bin/win-bin-x86-cpu
-          mv win-bin-x64-gpu/install/bin windows-bin/win-bin-x64-gpu
-          mv win-bin-x86-gpu/install/bin windows-bin/win-bin-x86-gpu
+          mv win-BIN-CPU-x64/install/bin windows-bin/win-BIN-CPU-x64
+          mv win-BIN-CPU-Win32/install/bin windows-bin/win-BIN-CPU-Win32
+          mv win-BIN-GPU-x64/install/bin windows-bin/win-BIN-GPU-x64
+          mv win-BIN-GPU-Win32/install/bin windows-bin/win-BIN-GPU-Win32
           7z a windows-bin.7z windows-bin
           mkdir windows-jni
-          mv win-jni-x64-cpu/install/bin windows-jni/win-jni-x64-cpu
-          mv win-jni-x86-cpu/install/bin windows-jni/win-jni-x86-cpu
-          mv win-jni-x64-gpu/install/bin windows-jni/win-jni-x64-gpu
-          mv win-jni-x86-gpu/install/bin windows-jni/win-jni-x86-gpu
+          mv win-JNI-CPU-x64/install windows-jni/win-JNI-CPU-x64
+          mv win-JNI-CPU-Win32/install windows-jni/win-JNI-CPU-Win32
+          mv win-JNI-GPU-x64/install windows-jni/win-JNI-GPU-x64
+          mv win-JNI-GPU-Win32/install windows-jni/win-JNI-GPU-Win32
           7z a windows-jni.7z windows-jni
+          mkdir windows-clib
+          mv win-CLIB-CPU-x64/install windows-clib/win-CLIB-CPU-x64
+          mv win-CLIB-CPU-Win32/install windows-clib/win-CLIB-CPU-Win32
+          mv win-CLIB-GPU-x64/install windows-clib/win-CLIB-GPU-x64
+          mv win-CLIB-GPU-Win32/install windows-clib/win-CLIB-GPU-Win32
+          7z a windows-clib.7z windows-clib
 
       # 上传artifact
       - name: upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: windows-bin
           path: windows-bin.7z
 
       - name: upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: windows-jni
           path: windows-jni.7z
 
+      - name: upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-clib
+          path: windows-clib.7z
+
   release:
-    needs: [ ubuntu1604, macos1015, windows-vs2017 ]
+    needs: [ ubuntu1804, macos1015, windows-vs2019 ]
 
     runs-on: ubuntu-latest
 
     steps:
       # 检出代码
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # 获取所有的git log和tag
       - name: Unshallow
@@ -297,13 +302,13 @@ jobs:
           echo "previousTag:$previousTag ~ lastTag:$lastTag"
           log=$(git log $previousTag..$lastTag --pretty=format:'- %cd %an: %s\n' --date=format:'%Y-%m-%d %H:%M:%S')
           echo "$log"
-          echo "::set-output name=log::"$log""
+          echo "log_state="$log"" >> $GITHUB_ENV
 
       # 创建Changelog文件 triggered by git tag push
       - name: Generate Changelog
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          echo -e '${{ steps.git-log.outputs.log }}' > Release.txt
+          echo -e '${{ env.log_state }}' > Release.txt
 
       # Cat Changelog triggered by git tag push
       - name: Cat Changelog
@@ -313,7 +318,7 @@ jobs:
 
       # 下载artifact
       - name: download
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           path: artifacts
 
@@ -357,6 +362,17 @@ jobs:
           asset_name: ${{ env.PKG_NAME }}.7z
           asset_content_type: application/x-7z-compressed
 
+      - name: upload-linux-clib
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PKG_NAME: linux-clib
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/${{ env.PKG_NAME }}/${{ env.PKG_NAME }}.7z
+          asset_name: ${{ env.PKG_NAME }}.7z
+          asset_content_type: application/x-7z-compressed
+
       - name: upload-macos-bin
         uses: actions/upload-release-asset@v1
         env:
@@ -373,6 +389,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PKG_NAME: macos-jni
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/${{ env.PKG_NAME }}/${{ env.PKG_NAME }}.7z
+          asset_name: ${{ env.PKG_NAME }}.7z
+          asset_content_type: application/x-7z-compressed
+
+      - name: upload-macos-clib
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PKG_NAME: macos-clib
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: artifacts/${{ env.PKG_NAME }}/${{ env.PKG_NAME }}.7z
@@ -401,6 +428,17 @@ jobs:
           asset_name: ${{ env.PKG_NAME }}.7z
           asset_content_type: application/x-7z-compressed
 
+      - name: upload-windows-clib
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PKG_NAME: windows-clib
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/${{ env.PKG_NAME }}/${{ env.PKG_NAME }}.7z
+          asset_name: ${{ env.PKG_NAME }}.7z
+          asset_content_type: application/x-7z-compressed
+
       # 获取指定时区的时间
       # https://github.com/marketplace/actions/get-time-action
       - name: Get Time
@@ -416,5 +454,5 @@ jobs:
         with:
           url: ${{ secrets.DINGTALK_WEBHOOK }}
           method: POST
-          payload: '{"msgtype": "text", "text": {"content": "版本更新: ${{ github.repository }}-版本号: ${{ github.ref }} \n 编译时间： ${{ steps.time.outputs.time }} \n 距上个正式版的更新记录: \n${{ steps.git-log.outputs.log }}"}}'
+          payload: '{"msgtype": "text", "text": {"content": "版本更新: ${{ github.repository }}-版本号: ${{ github.ref }} \n 编译时间： ${{ steps.time.outputs.time }} \n 距上个正式版的更新记录: \n${{ env.log_state }}"}}'
           headers: '{"Content-Type": "application/json"}'
