@@ -1,10 +1,13 @@
 #ifndef __JNI__
-
+#ifndef __CLIB__
 #include <cstdio>
 #include "main.h"
 #include "version.h"
 #include "OcrLite.h"
 #include "OcrUtils.h"
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 void printHelp(FILE *out, char *argv0) {
     fprintf(out, " ------- Usage -------\n");
@@ -25,14 +28,17 @@ int main(int argc, char **argv) {
         printHelp(stderr, argv[0]);
         return -1;
     }
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+#endif
     std::string modelsDir, modelDetPath, modelClsPath, modelRecPath, keysPath;
     std::string imgPath, imgDir, imgName;
     int numThread = 4;
-    int padding = 0;
+    int padding = 50;
     int maxSideLen = 1024;
     float boxScoreThresh = 0.5f;
     float boxThresh = 0.3f;
-    float unClipRatio = 2.0f;
+    float unClipRatio = 1.6f;
     bool doAngle = true;
     int flagDoAngle = 1;
     bool mostAngle = true;
@@ -114,6 +120,7 @@ int main(int argc, char **argv) {
                 break;
             case 'v':
                 printf("%s\n", VERSION);
+                printGpuInfo();
                 return 0;
             case 'h':
                 printHelp(stdout, argv[0]);
@@ -189,4 +196,5 @@ int main(int argc, char **argv) {
     return 0;
 }
 
+#endif
 #endif

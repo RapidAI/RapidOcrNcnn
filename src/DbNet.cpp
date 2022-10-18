@@ -102,9 +102,9 @@ DbNet::getTextBoxes(cv::Mat &src, ScaleParam &s, float boxScoreThresh, float box
     input.substract_mean_normalize(meanValues, normValues);
     ncnn::Extractor extractor = net.create_extractor();
     extractor.set_num_threads(numThread);
-    extractor.input("x", input);
+    extractor.input("input", input);
     ncnn::Mat out;
-    extractor.extract("save_infer_model/scale_0.tmp_1", out);
+    extractor.extract("output", out);
     //-----Data preparation-----
     cv::Mat fMapMat(srcResize.rows, srcResize.cols, CV_32FC1);
     memcpy(fMapMat.data, (float *) out.data, srcResize.rows * srcResize.cols * sizeof(float));

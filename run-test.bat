@@ -5,18 +5,16 @@ chcp 65001
 echo "Setting the Number of Threads=%NUMBER_OF_PROCESSORS% Using an OpenMP Environment Variable"
 set OMP_NUM_THREADS=%NUMBER_OF_PROCESSORS%
 
-echo "请选择det模型: 1)server, 2)mobile"
+:MainExec
+echo "Gpu版本测试前请先安装Vulkan SDK v1.2.162.0，https://vulkan.lunarg.com/sdk/home"
+echo "请输入测试选项并回车: 1)CPU-x64, 2)CPU-x86, 3)GPU-x64, 4)GPU-x86"
+set GPU_INDEX=-1
 set /p flag=
-if %flag% == 1 (set DET_MODEL=ch_ppocr_server_v2.0_det_infer)^
-else if %flag% == 2 (set DET_MODEL=ch_ppocr_mobile_v2.0_det_infer)^
+if %flag% == 1 (call :PrepareCpuX64)^
+else if %flag% == 2 (call :PrepareCpuX86)^
+else if %flag% == 3 (call :PrepareGpuX64)^
+else if %flag% == 4 (call :PrepareGpuX86)^
 else (echo 输入错误！Input Error!)
-
-set REC_MODEL=ch_ppocr_server_v2.0_rec_infer
-:: echo "请选择rec模型: 1)server, 2)mobile"
-:: set /p flag=
-:: if %flag% == 1 (set REC_MODEL=ch_ppocr_server_v2.0_rec_infer)^
-:: else if %flag% == 2 (set REC_MODEL=ch_ppocr_mobile_v2.0_rec_infer)^
-:: else (echo 输入错误！Input Error!)
 
 SET TARGET_IMG=images/1.jpg
 if not exist %TARGET_IMG% (
@@ -25,21 +23,48 @@ PAUSE
 exit
 )
 
-:: run Windows
-build\install\bin\RapidOCRNcnn.exe --version
-build\install\bin\RapidOCRNcnn.exe --models models ^
---det %DET_MODEL% ^
+if exist %EXE_PATH%\install\bin (
+SET EXE_PATH=%EXE_PATH%\install\bin
+)
+
+%EXE_PATH%\RapidOcrNcnn.exe --version
+%EXE_PATH%\RapidOcrNcnn.exe --models models ^
+--det ch_PP-OCRv3_det_infer ^
 --cls ch_ppocr_mobile_v2.0_cls_infer ^
---rec %REC_MODEL%  ^
+--rec ch_PP-OCRv3_rec_infer ^
 --keys ppocr_keys_v1.txt ^
 --image %TARGET_IMG% ^
 --numThread %NUMBER_OF_PROCESSORS% ^
---padding 0 ^
+--padding 50 ^
 --maxSideLen 1024 ^
 --boxScoreThresh 0.5 ^
 --boxThresh 0.3 ^
---unClipRatio 1.5 ^
---doAngle 0 ^
---mostAngle 0 -G 0
-PAUSE
+--unClipRatio 1.6 ^
+--doAngle 1 ^
+--mostAngle 1 ^
+--GPU %GPU_INDEX%
+
+echo.
+GOTO:MainExec
+
+:PrepareCpuX64
+set EXE_PATH=win-BIN-CPU-x64
+set GPU_INDEX=-1
+GOTO:EOF
+
+:PrepareCpuX86
+set EXE_PATH=win-BIN-CPU-Win32
+set GPU_INDEX=-1
+GOTO:EOF
+
+:PrepareGpuX64
+set EXE_PATH=win-BIN-GPU-x64
+set GPU_INDEX=0
+GOTO:EOF
+
+:PrepareGpuX86
+set EXE_PATH=win-BIN-GPU-Win32
+set GPU_INDEX=0
+GOTO:EOF
+
 @ENDLOCAL

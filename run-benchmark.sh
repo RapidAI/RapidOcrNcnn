@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 
+function PrepareVar(){
+echo "Gpu版本测试前请先安装Vulkan SDK v1.2.162.0，https://vulkan.lunarg.com/sdk/home"
+echo "请输入测试选项并回车: 1)CPU, 2)GPU"
+read -p "" RUN_ARCH
+if [ $RUN_ARCH == 1 ]; then
+    EXE_PATH=${sysOS}-BIN-CPU
+    GPU_INDEX=-1
+elif [ $RUN_ARCH == 2 ]; then
+    EXE_PATH=${sysOS}-BIN-GPU
+    GPU_INDEX=0
+else
+  echo -e "输入错误！Input Error!"
+fi
+}
+
 sysOS=`uname -s`
 NUM_THREADS=1
 if [ $sysOS == "Darwin" ];then
@@ -15,28 +30,9 @@ fi
 echo "Setting the Number of Threads=$NUM_THREADS Using an OpenMP Environment Variable"
 set OMP_NUM_THREADS=$NUM_THREADS
 
-echo "请选择det模型: 1)server, 2)mobile"
-read -p "" DET_MODEL
-if [ $DET_MODEL == 1 ]; then
-    DET_MODEL="ch_ppocr_server_v2.0_det_infer"
-elif [ $DET_MODEL == 2 ]; then
-    DET_MODEL="ch_ppocr_mobile_v2.0_det_infer"
-else
-  echo -e "Input Error!"
-fi
+PrepareVar
 
-REC_MODEL="ch_ppocr_server_v2.0_rec_infer"
-#echo "请选择det模型: 1)server, 2)mobile"
-#read -p "" REC_MODEL
-#if [ $REC_MODEL == 1 ]; then
-#    REC_MODEL="ch_ppocr_server_v2.0_rec_infer"
-#elif [ $REC_MODEL == 2 ]; then
-#    REC_MODEL="ch_ppocr_mobile_v2.0_rec_infer"
-#else
-#  echo -e "Input Error!"
-#fi
-
-echo "请输入循环次数:"
+echo "请输入循环次数"
 read -p "" LOOP_COUNT
 
 TARGET_IMG=images/1.jpg
@@ -45,20 +41,20 @@ echo "找不到待识别的目标图片：${TARGET_IMG}，请打开本文件并�
 exit
 fi
 
-##### run test on MacOS or Linux
-./build/install/bin/benchmark --version
-./build/install/bin/benchmark --models models \
---det $DET_MODEL \
+./${EXE_PATH}/benchmark --version
+./${EXE_PATH}/benchmark --models models \
+--det ch_PP-OCRv3_det_infer \
 --cls ch_ppocr_mobile_v2.0_cls_infer \
---rec $REC_MODEL \
+--rec ch_PP-OCRv3_rec_infer \
 --keys ppocr_keys_v1.txt \
 --image $TARGET_IMG \
 --numThread $NUM_THREADS \
---padding 0 \
+--padding 50 \
 --maxSideLen 1024 \
 --boxScoreThresh 0.5 \
 --boxThresh 0.3 \
---unClipRatio 1.5 \
---doAngle 0 \
---mostAngle 0 \
---loopCount $LOOP_COUNT -G 0
+--unClipRatio 1.6 \
+--doAngle 1 \
+--mostAngle 1 \
+--GPU $GPU_INDEX \
+--loopCount $LOOP_COUNT

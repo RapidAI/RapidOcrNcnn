@@ -42,10 +42,6 @@ bool CrnnNet::initModel(const std::string &pathStr, const std::string &keysPath)
         printf("The keys.txt file was not found\n");
         return false;
     }
-    if (keys.size() != 6623) {
-        fprintf(stderr, "missing keys\n");
-        return false;
-    }
     keys.insert(keys.begin(), "#");
     keys.emplace_back(" ");
     printf("total keys size(%lu)\n", keys.size());
@@ -66,8 +62,10 @@ TextLine CrnnNet::scoreToTextLine(const std::vector<float> &outputData, int h, i
     float maxValue;
 
     for (int i = 0; i < h; i++) {
-        maxIndex = int(argmax(&outputData[i * w], &outputData[(i + 1) * w - 1]));
-        maxValue = float(*std::max_element(&outputData[i * w], &outputData[(i + 1) * w - 1]));
+        int start = i * w;
+        int stop = (i + 1) * w - 1;
+        maxIndex = int(argmax(&outputData[start], &outputData[stop]));
+        maxValue = float(*std::max_element(&outputData[start], &outputData[stop]));
 
         if (maxIndex > 0 && maxIndex < keySize && (!(i > 0 && maxIndex == lastIndex))) {
             scores.emplace_back(maxValue);
@@ -93,11 +91,10 @@ TextLine CrnnNet::getTextLine(const cv::Mat &src) {
 
     ncnn::Extractor extractor = net.create_extractor();
     extractor.set_num_threads(numThread);
-    extractor.input("x", input);
+    extractor.input("input", input);
 
-    //ncnn lstm
     ncnn::Mat out;
-    extractor.extract("save_infer_model/scale_0.tmp_1", out);
+    extractor.extract("output", out);
     float *floatArray = (float *) out.data;
     std::vector<float> outputData(floatArray, floatArray + out.h * out.w);
     return scoreToTextLine(outputData, out.h, out.w);

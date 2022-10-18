@@ -1,0 +1,108 @@
+==9478== Memcheck, a memory error detector
+==9478== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==9478== Using Valgrind-3.14.0 and LibVEX; rerun with -h for copyright info
+==9478== Command: ./Linux-BIN-CPU/RapidOcrNcnn --models models --det ch_PP-OCRv3_det_infer --cls ch_ppocr_mobile_v2.0_cls_infer --rec ch_PP-OCRv3_rec_infer --keys ppocr_keys_v1.txt --image images/1.jpg --numThread 1 --padding 50 --maxSideLen 1024 --boxScoreThresh 0.5 --boxThresh 0.3 --unClipRatio 1.6 --doAngle 1 --mostAngle 1 --GPU -1
+==9478== Parent PID: 9476
+==9478== 
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+--9478-- Warning: DWARF2 CFI reader: unhandled DW_OP_ opcode 0x13
+vex amd64->IR: unhandled instruction bytes: 0xC4 0xE3 0x7D 0x1D 0xC0 0x3 0xC5 0xF8 0x11 0x4
+vex amd64->IR:   REX=0 REX.W=0 REX.R=0 REX.X=0 REX.B=0
+vex amd64->IR:   VEX=1 VEX.L=1 VEX.nVVVV=0x0 ESC=0F3A
+vex amd64->IR:   PFX.66=1 PFX.F2=0 PFX.F3=0
+==9478== valgrind: Unrecognised instruction at address 0x980ad7.
+==9478==    at 0x980AD7: ncnn::Cast_x86_fma::forward(ncnn::Mat const&, ncnn::Mat&, ncnn::Option const&) const (in /media/psf/Home/OCRProjects/RapidOcrNcnn/Linux-BIN-CPU/RapidOcrNcnn)
+==9478==    by 0x4C12D7: ncnn::cast_float32_to_float16(ncnn::Mat const&, ncnn::Mat&, ncnn::Option const&) (in /media/psf/Home/OCRProjects/RapidOcrNcnn/Linux-BIN-CPU/RapidOcrNcnn)
+==9478==    by 0x69B6E3: ncnn::InnerProduct_x86_fma::create_pipeline_fp16s(ncnn::Option const&) (in /media/psf/Home/OCRProjects/RapidOcrNcnn/Linux-BIN-CPU/RapidOcrNcnn)
+==9478==    by 0x6B26CA: ncnn::InnerProduct_x86_fma::create_pipeline(ncnn::Option const&) (in /media/psf/Home/OCRProjects/RapidOcrNcnn/Linux-BIN-CPU/RapidOcrNcnn)
+==9478==    by 0x4D7DE4: ncnn::Net::load_model(ncnn::DataReader const&) (in /media/psf/Home/OCRProjects/RapidOcrNcnn/Linux-BIN-CPU/RapidOcrNcnn)
+==9478==    by 0x4D813D: ncnn::Net::load_model(char const*) (in /media/psf/Home/OCRProjects/RapidOcrNcnn/Linux-BIN-CPU/RapidOcrNcnn)
+==9478==    by 0x484459: AngleNet::initModel(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (AngleNet.cpp:28)
+==9478==    by 0x48E839: OcrLite::initModels(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (OcrLite.cpp:45)
+==9478==    by 0x4BBF4F: main (main.cpp:190)
+==9478== Your program just tried to execute an instruction that Valgrind
+==9478== did not recognise.  There are two possible reasons for this.
+==9478== 1. Your program has a bug and erroneously jumped to a non-code
+==9478==    location.  If you are running Memcheck and you just saw a
+==9478==    warning about a bad jump, it's probably your program's fault.
+==9478== 2. The instruction is legitimate but Valgrind doesn't handle it,
+==9478==    i.e. it's Valgrind's fault.  If you think this is the case or
+==9478==    you are not sure, please let us know and we'll try to fix it.
+==9478== Either way, Valgrind will now raise a SIGILL signal which will
+==9478== probably kill your program.
+==9478== 
+==9478== Process terminating with default action of signal 4 (SIGILL)
+==9478==  Illegal opcode at address 0x980AD7
+==9478==    at 0x980AD7: ncnn::Cast_x86_fma::forward(ncnn::Mat const&, ncnn::Mat&, ncnn::Option const&) const (in /media/psf/Home/OCRProjects/RapidOcrNcnn/Linux-BIN-CPU/RapidOcrNcnn)
+==9478==    by 0x4C12D7: ncnn::cast_float32_to_float16(ncnn::Mat const&, ncnn::Mat&, ncnn::Option const&) (in /media/psf/Home/OCRProjects/RapidOcrNcnn/Linux-BIN-CPU/RapidOcrNcnn)
+==9478==    by 0x69B6E3: ncnn::InnerProduct_x86_fma::create_pipeline_fp16s(ncnn::Option const&) (in /media/psf/Home/OCRProjects/RapidOcrNcnn/Linux-BIN-CPU/RapidOcrNcnn)
+==9478==    by 0x6B26CA: ncnn::InnerProduct_x86_fma::create_pipeline(ncnn::Option const&) (in /media/psf/Home/OCRProjects/RapidOcrNcnn/Linux-BIN-CPU/RapidOcrNcnn)
+==9478==    by 0x4D7DE4: ncnn::Net::load_model(ncnn::DataReader const&) (in /media/psf/Home/OCRProjects/RapidOcrNcnn/Linux-BIN-CPU/RapidOcrNcnn)
+==9478==    by 0x4D813D: ncnn::Net::load_model(char const*) (in /media/psf/Home/OCRProjects/RapidOcrNcnn/Linux-BIN-CPU/RapidOcrNcnn)
+==9478==    by 0x484459: AngleNet::initModel(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (AngleNet.cpp:28)
+==9478==    by 0x48E839: OcrLite::initModels(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (OcrLite.cpp:45)
+==9478==    by 0x4BBF4F: main (main.cpp:190)
+==9478== 
+==9478== HEAP SUMMARY:
+==9478==     in use at exit: 4,459,286 bytes in 2,315 blocks
+==9478==   total heap usage: 2,616 allocs, 301 frees, 9,269,030 bytes allocated
+==9478== 
+==9478== LEAK SUMMARY:
+==9478==    definitely lost: 0 bytes in 0 blocks
+==9478==    indirectly lost: 0 bytes in 0 blocks
+==9478==      possibly lost: 0 bytes in 0 blocks
+==9478==    still reachable: 4,459,286 bytes in 2,315 blocks
+==9478==                       of which reachable via heuristic:
+==9478==                         multipleinheritance: 190,976 bytes in 344 blocks
+==9478==         suppressed: 0 bytes in 0 blocks
+==9478== Reachable blocks (those to which a pointer was found) are not shown.
+==9478== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==9478== 
+==9478== For counts of detected and suppressed errors, rerun with: -v
+==9478== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

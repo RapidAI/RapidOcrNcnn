@@ -1,27 +1,56 @@
-# RapidOCRNcnnCpp
+# RapidOcrNcnn
+
+### 联系方式
+
+* QQ①群：887298230
 
 ### Project下载
 
-* 有整合好源码和依赖库的完整工程项目，文件比较大，可到Q群共享内下载，找以Project开头的压缩包文件
+* 整合好源码和依赖库的完整工程项目，可以在Release中下载(github)
+* 可到Q群共享内下载，以Project开头的压缩包文件为源码工程，例：Project_RapidOcrNcnn-版本号.7z
 * 如果想自己折腾，则请继续阅读本说明
+
+### Demo下载(win、mac、linux)
+
+* 编译好的demo，可以在release中下载，或者Q群共享内下载
+* 各平台可执行文件：linux-bin.7z、macos-bin.7z、windows-bin.7z
+* 用于java的jni库：linux-jni.7z、macos-jni.7z、windows-jni.7z
+* 用于C的动态库：linux-clib.7z、macos-clib.7z、windows-clib.7z
+* C动态库调用范例:[RapidOcrNcnnLibTest](https://github.com/RapidAI/RapidOcrNcnnLibTest)
+* 注意：linux编译平台为ubuntu18.04，如果你的linux版本无法运行demo，请自行从源码编译依赖库和完整项目。
 
 ### 介绍
 
-本项目已停止更新。
+请查看项目主仓库：https://github.com/RapidAI/RapidOCR
 
-RapidOCR ncnn 推理
+这个项目使用ncnn框架进行推理
 
-~~模型转换路线: paddle-> onnx -> onnx-simplifier -> ncnn~~
+采用ncnn框架[https://github.com/Tencent/ncnn](https://github.com/Tencent/ncnn)
 
-~~onnx2ncnn转换工具未完全支持，部分模型转换出错，目前关闭cls模型来使用~~
+### 更新说明
 
-~~转换成功的模型：mobile_det,server_det,server_rec~~
+#### 2021-10-18 update
 
-~~转换失败的模型：mobile_cls,mobile_rec~~
+* opencv 4.6.0
+* ncnn 20220729
+* windows支持mt版引用库
+* rec模型输入图片高度改为48
+* 修复：scoreToTextLine方法索引越界问题
+* Windows控制台编码修改为UTF8
+### 模型下载
 
-### [模型转换说明](./models/README.md)
+整合好的范例工程自带了模型，在models文件夹中
 
-### [模型下载](https://github.com/RapidOCR/RapidOCRNcnnCpp/releases/tag/init)
+```
+RapidOcrNcnn/models
+    ├── ch_PP-OCRv3_det_infer.bin
+    ├── ch_PP-OCRv3_det_infer.param
+    ├── ch_PP-OCRv3_rec_infer.bin
+    ├── ch_PP-OCRv3_rec_infer.param
+    ├── ch_ppocr_mobile_v2.0_cls_infer.bin
+    ├── ch_ppocr_mobile_v2.0_cls_infer.param
+    └── ppocr_keys_v1.txt
+```
 
 ### [编译说明](./BUILD.md)
 
@@ -29,18 +58,19 @@ RapidOCR ncnn 推理
 
 1. 根据系统下载对应的程序包linux-bin.7z、macos-bin.7z、windows-bin.7z，并解压.
 2. 把上面的模型下载，解压到第一步解压的文件夹里.
-3. 终端运行run-test-cn.sh或命令行运行run-test-cn.bat，选择模型，查看识别结果.
-4. 终端运行run-benchmark-cn.sh或命令行运行run-benchmark-cn.bat，选择模型，查看识别过程平均耗时.
+3. 终端运行run-test.sh或命令行运行run-test.bat，查看识别结果.
+4. 终端运行run-benchmark.sh或命令行运行run-benchmark.bat，查看识别过程平均耗时.
 
 ### FAQ
-
-#### macOS缺少openmp
-
-```brew install libomp```
 
 #### gpu版程序运行出错，缺少vulkan sdk
 
 参考[编译说明](./BUILD.md) 安装vulkan sdk
+
+#### windows静态链接msvc
+
+- 作用:静态链接CRT(mt)可以让编译出来的包，部署时不需要安装c++运行时，但会增大包体积；
+- 需要mt版的引用库，参考编译说明，下载mt版的库；
 
 #### windows提示缺少"VCRUNTIME140_1.dll"
 
@@ -53,12 +83,29 @@ RapidOCR ncnn 推理
 2. 字体选项卡-选择除了“点阵字体”以外的TrueType字体,例如:Lucida Console、宋体
 3. 重新执行bat
 
-### 参数说明
+### Windows调试运行
+
+* 下载范例项目工程自带的引用库是Release版，不能用于调试运行
+* debug版的引用库未压缩时容量超过1GB，极限压缩后也超过了100MB，请自行编译或到群共享里寻找
+* debug版的引用库必须是md版
+* 把debug版的引用库替换到范例工程的对应文件夹
+* 双击generate-vs-project.bat，选择2)Debug，生成对应的build-win-vsxxx-xx文件夹
+* 进入生成的文件夹，打开RapidOcrOnnx.sln
+* 右边解决方案管理器，选中RapidOcrOnnx，右键->设为启动项目，并生成(查看输出log，确保生成成功)
+* 如果引用库是dll，需要把对应的dll文件，例onnxruntime.dll复制到build-win-vsxxx-xx文件夹\Debug，跟上一步生成的RapidOcrOnnx.exe放在一起
+* 右边解决方案管理器，选中RapidOcrOnnx，右键->属性->调试->命令参数->```--models ../models --det ch_PP-OCRv3_det_infer --cls ch_ppocr_mobile_v2.0_cls_infer --rec ch_PP-OCRv3_rec_infer --keys ppocr_keys_v1.txt --image ../images/1.jpg```
+* 工具栏，点击绿色三角号启动"本地Windows调试器"
+* 第一次运行的话，查看左下角，等待加载各dll符号，网络不好的话，要等挺久的
+
+### 输入参数说明
+
+* 请参考main.h中的命令行参数说明。
+* 每个参数有一个短参数名和一个长参数名，用短的或长的均可。
 
 1. ```-d或--models```: 模型所在文件夹路径，可以相对路径也可以绝对路径。
-2. ```-1或--det```: dbNet模型文件名(不含扩展名)
-3. ```-2或--cls```: angleNet模型文件名(不含扩展名)
-4. ```-3或--rec```: crnnNet模型文件名(不含扩展名)
+2. ```-1或--det```: det模型文件名(不含扩展名)
+3. ```-2或--cls```: cls模型文件名(不含扩展名)
+4. ```-3或--rec```: rec模型文件名(不含扩展名)
 5. ```-4或--keys```: keys.txt文件名(含扩展名)
 6. ```-i或--image```: 目标图片路径，可以相对路径也可以绝对路径。
 7. ```-t或--numThread```: 线程数量。

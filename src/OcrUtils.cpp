@@ -324,3 +324,14 @@ std::string getDebugImgFilePath(const char *path, const char *imgName, int i, co
     filePath.append(path).append(imgName).append(tag).append(std::to_string(i)).append(".jpg");
     return filePath;
 }
+
+void printGpuInfo() {
+#ifdef __VULKAN__
+    auto gpuCount = ncnn::get_gpu_count();
+    if (gpuCount != 0) {
+        printf("This device has %d GPUs\n", gpuCount);
+    } else {
+        printf("This device does not have a GPU\n");
+    }
+#endif
+}

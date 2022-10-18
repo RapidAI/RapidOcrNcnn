@@ -49,6 +49,7 @@ bool OcrLite::initModels(const std::string &detPath, const std::string &clsPath,
 
     if (!retDbNet || !retAngleNet || !retCrnnNet) {
         Logger("Init Models Failed! %d  %d  %d\n", retDbNet, retAngleNet, retCrnnNet);
+        return false;
     }
     return true;
 }
@@ -93,6 +94,27 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     OcrResult result;
     result = detect(path, imgName, paddingSrc, paddingRect, scale,
                     boxScoreThresh, boxThresh, unClipRatio, doAngle, mostAngle);
+    return result;
+}
+
+OcrResult OcrLite::detect(const cv::Mat& mat, int padding, int maxSideLen, float boxScoreThresh, float boxThresh, float unClipRatio, bool doAngle, bool mostAngle)
+{
+    cv::Mat originSrc = mat;
+    int originMaxSide = (std::max)(originSrc.cols, originSrc.rows);
+    int resize;
+    if (maxSideLen <= 0 || maxSideLen > originMaxSide) {
+        resize = originMaxSide;
+    }
+    else {
+        resize = maxSideLen;
+    }
+    resize += 2 * padding;
+    cv::Rect paddingRect(padding, padding, originSrc.cols, originSrc.rows);
+    cv::Mat paddingSrc = makePadding(originSrc, padding);
+    ScaleParam scale = getScaleParam(paddingSrc, resize);
+    OcrResult result;
+    result = detect(NULL, NULL, paddingSrc, paddingRect, scale,
+        boxScoreThresh, boxThresh, unClipRatio, doAngle, mostAngle);
     return result;
 }
 

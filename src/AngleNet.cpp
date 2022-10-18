@@ -53,9 +53,9 @@ Angle AngleNet::getAngle(cv::Mat &src) {
     input.substract_mean_normalize(meanValues, normValues);
     ncnn::Extractor extractor = net.create_extractor();
     extractor.set_num_threads(numThread);
-    extractor.input("x", input);
+    extractor.input("input", input);
     ncnn::Mat out;
-    extractor.extract("save_infer_model/scale_0.tmp_1", out);
+    extractor.extract("output", out);
     float *floatArray = (float *) out.data;
     std::vector<float> outputData(floatArray, floatArray + out.w);
     return scoreToAngle(outputData);
@@ -98,7 +98,7 @@ std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const cha
         } else {//all angle set to 1
             mostAngleIndex = 1;
         }
-        printf("Set All Angle to mostAngleIndex(%d)\n", mostAngleIndex);
+        //printf("Set All Angle to mostAngleIndex(%d)\n", mostAngleIndex);
         for (int i = 0; i < angles.size(); ++i) {
             Angle angle = angles[i];
             angle.index = mostAngleIndex;

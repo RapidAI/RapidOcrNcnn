@@ -1,5 +1,5 @@
 #!/bin/bash
-## script for 内存泄露检查
+## script for 内存占用检查
 # ========== macOS ==========
 # https://github.com/LouisBrunner/valgrind-macos
 # brew tap LouisBrunner/valgrind
@@ -18,11 +18,8 @@ echo "找不到待识别的目标图片：${TARGET_IMG}，请打开本文件并�
 exit
 fi
 
-sysOS=`uname -s`
-EXE_PATH=${sysOS}-BIN-CPU
-
 ##### run test on MacOS or Linux
-valgrind --tool=memcheck --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no --log-file=valgrind-memcheck.txt \
+valgrind --tool=massif --pages-as-heap=yes \
 ./${EXE_PATH}/RapidOcrNcnn --models models \
 --det ch_PP-OCRv3_det_infer \
 --cls ch_ppocr_mobile_v2.0_cls_infer \
@@ -36,5 +33,4 @@ valgrind --tool=memcheck --leak-check=full --leak-resolution=med --track-origins
 --boxThresh 0.3 \
 --unClipRatio 1.6 \
 --doAngle 1 \
---mostAngle 1 \
---GPU -1
+--mostAngle 1
