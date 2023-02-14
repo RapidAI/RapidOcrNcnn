@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-18.04
 
     env:
-      NCNN_VERSION: 20220729
-      CPU_PKG_NAME: ncnn-20220729-ubuntu1804
-      GPU_PKG_NAME: ncnn-20220729-ubuntu1804-vulkan
+      NCNN_VERSION: 20221128
+      CPU_PKG_NAME: ncnn-20221128-ubuntu1804
+      GPU_PKG_NAME: ncnn-20221128-ubuntu1804-vulkan
       CV_VERSION: 4.6.0
       CV_PKG_NAME: opencv-4.6.0-ubuntu1804
 
@@ -99,9 +99,9 @@ jobs:
     runs-on: macos-latest
 
     env:
-      NCNN_VERSION: 20220729
-      CPU_PKG_NAME: ncnn-20220729-macos1015
-      GPU_PKG_NAME: ncnn-20220729-macos1015-vulkan
+      NCNN_VERSION: 20221128
+      CPU_PKG_NAME: ncnn-20221128-macos1015
+      GPU_PKG_NAME: ncnn-20221128-macos1015-vulkan
       CV_VERSION: 4.6.0
       CV_PKG_NAME: opencv-4.6.0-macos1015
 
@@ -191,9 +191,9 @@ jobs:
     runs-on: windows-2019
 
     env:
-      NCNN_VERSION: 20220729
-      CPU_PKG_NAME: ncnn-20220729-windows-vs2019-mt
-      GPU_PKG_NAME: ncnn-20220729-windows-vs2019-vulkan-mt
+      NCNN_VERSION: 20221128
+      CPU_PKG_NAME: ncnn-20221128-windows-vs2019-mt
+      GPU_PKG_NAME: ncnn-20221128-windows-vs2019-vulkan-mt
       CV_VERSION: 4.6.0
       CV_PKG_NAME: opencv-4.6.0-windows-vs2019-mt
 
