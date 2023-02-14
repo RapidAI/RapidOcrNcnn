@@ -24,10 +24,10 @@ jobs:
       # 安装vulkan
       - name: vulkansdk
         run: |
-          wget https://sdk.lunarg.com/sdk/download/1.2.189.0/linux/vulkansdk-linux-x86_64-1.2.189.0.tar.gz?Human=true -O vulkansdk-linux-x86_64-1.2.189.0.tar.gz
-          tar -xf vulkansdk-linux-x86_64-1.2.189.0.tar.gz
-          rm -rf 1.2.189.0/source 1.2.189.0/samples
-          find 1.2.189.0 -type f | grep -v -E 'vulkan|glslang' | xargs rm
+          wget https://sdk.lunarg.com/sdk/download/1.3.236.0/linux/vulkansdk-linux-x86_64-1.3.236.0.tar.gz?Human=true -O vulkansdk-linux-x86_64-1.3.236.0.tar.gz
+          tar -xf vulkansdk-linux-x86_64-1.3.236.0.tar.gz
+          rm -rf 1.3.236.0/source 1.3.236.0/samples
+          find 1.3.236.0 -type f | grep -v -E 'vulkan|glslang' | xargs rm
 
       # 下载ncnn-static
       - name: download ncnn-static
@@ -53,8 +53,8 @@ jobs:
       # 编译
       - name: build
         run: |
-          export VULKAN_SDK=`pwd`/1.2.189.0/x86_64
-          export PATH=`pwd`/1.2.189.0/x86_64/bin:$PATH
+          export VULKAN_SDK=`pwd`/1.3.236.0/x86_64
+          export PATH=`pwd`/1.3.236.0/x86_64/bin:$PATH
           chmod a+x build-default.sh &&./build-default.sh
 
       # 使用7z压缩
@@ -117,10 +117,10 @@ jobs:
       # 安装vulkan
       - name: vulkansdk
         run: |
-          wget https://sdk.lunarg.com/sdk/download/1.2.189.0/mac/vulkansdk-macos-1.2.189.0.dmg?Human=true -O vulkansdk-macos-1.2.189.0.dmg
-          hdiutil attach vulkansdk-macos-1.2.189.0.dmg
-          sudo /Volumes/vulkansdk-macos-1.2.189.0/InstallVulkan.app/Contents/MacOS/InstallVulkan --root $GITHUB_WORKSPACE/vulkansdk-macos-1.2.189.0 --accept-licenses --default-answer --confirm-command install
-          hdiutil detach /Volumes/vulkansdk-macos-1.2.189.0
+          wget https://sdk.lunarg.com/sdk/download/1.3.236.0/mac/vulkansdk-macos-1.3.236.0.dmg?Human=true -O vulkansdk-macos-1.3.236.0.dmg
+          hdiutil attach vulkansdk-macos-1.3.236.0.dmg
+          sudo /Volumes/vulkansdk-macos-1.3.236.0/InstallVulkan.app/Contents/MacOS/InstallVulkan --root $GITHUB_WORKSPACE/vulkansdk-macos-1.3.236.0 --accept-licenses --default-answer --confirm-command install
+          hdiutil detach /Volumes/vulkansdk-macos-1.3.236.0
 
       # 下载ncnn-static
       - name: download ncnn-static
@@ -146,7 +146,7 @@ jobs:
       # 编译
       - name: build
         run: |
-          export VULKAN_SDK=$GITHUB_WORKSPACE/vulkansdk-macos-1.2.189.0/macOS
+          export VULKAN_SDK=$GITHUB_WORKSPACE/vulkansdk-macos-1.3.236.0/macOS
           chmod a+x build-default.sh &&./build-default.sh
 
       # 使用7z压缩
@@ -204,9 +204,8 @@ jobs:
       # 安装vulkan
       - name: vulkansdk
         run: |
-          Invoke-WebRequest -Uri https://sdk.lunarg.com/sdk/download/1.2.189.0/windows/VulkanSDK-1.2.189.0-Installer.exe?Human=true -OutFile VulkanSDK.exe
-          $installer = Start-Process -FilePath VulkanSDK.exe -Wait -PassThru -ArgumentList @("/S");
-          $installer.WaitForExit();
+          Invoke-WebRequest -Uri https://sdk.lunarg.com/sdk/download/1.3.236.0/windows/VulkanSDK-1.3.236.0-Installer.exe?Human=true -OutFile VulkanSDK.exe
+          .\VulkanSDK.exe --accept-licenses --default-answer --confirm-command install "com.lunarg.vulkan.debug32" "com.lunarg.vulkan.sdl2" "com.lunarg.vulkan.32bit" "com.lunarg.vulkan" "com.lunarg.vulkan.glm" "com.lunarg.vulkan.vma" "com.lunarg.vulkan.core" "com.lunarg.vulkan.32bit" "com.lunarg.vulkan.volk" "com.lunarg.vulkan.debug"
 
       # 下载ncnn-static
       - name: download ncnn-static
@@ -232,8 +231,8 @@ jobs:
       # 编译
       - name: build
         run: |
-          $env:VULKAN_SDK="C:/VulkanSDK/1.2.189.0"
-          $env:Path+=";C:/VulkanSDK/1.2.189.0/Bin"
+          $env:VULKAN_SDK="C:/VulkanSDK/1.3.236.0"
+          $env:Path+=";C:/VulkanSDK/1.3.236.0/Bin"
           ./build-default.bat
 
       # 使用7z压缩
