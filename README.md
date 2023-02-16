@@ -29,7 +29,7 @@
 
 ### 更新说明
 
-#### 2022-10-18 update
+#### 2022-10-18 update v1.1.0
 
 * opencv 4.6.0
 * ncnn 20220729
@@ -38,13 +38,13 @@
 * 修复：scoreToTextLine方法索引越界问题
 * Windows控制台编码修改为UTF8
 
-#### 2022-10-20 update
+#### 2022-10-20 update v1.1.1
 
 * rec阶段启用gpu
 * 修复空格问题
 * 改进benchmark输出格式
 
-#### 2023-02-14 update
+#### 2023-02-14 update v1.2.0
 
 * ncnn: 20221128
 * vulkan: 1.3.236.0
